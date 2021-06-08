@@ -43,7 +43,12 @@ public class GameScreen implements Screen {
     TextureRegion currentFrame;                             // Current frame to display.
     float stateTime;                                        // The time the program has been running.
 
+    // Heart variables
+    private Texture lifeImage;
+
     float dt; //delta time
+
+    private int lives;
 
     // constructor to keep a reference to the main Game class
     public GameScreen(MyGdxGame game) {
@@ -82,6 +87,10 @@ public class GameScreen implements Screen {
         // Sets the runFrames TextureTesgion into an Animation object, with a framerate set to 0.033, which is 30 frames per second.
         runAnimation = new Animation(0.033f, runFrames);
 
+        // Heart
+        lifeImage = new Texture(Gdx.files.internal("heart.png"));
+
+        lives = 3;
     }
 
     public void render(float f) {
@@ -103,6 +112,23 @@ public class GameScreen implements Screen {
         spriteBatch.begin();
         // Draws the main Character based on its state.
         spriteBatch.draw(currentFrame, characterX, characterY, character_width, character_height);
+
+        if (lives == 3) {
+            spriteBatch.draw(lifeImage, 640, 400, character_width, character_height);
+            spriteBatch.draw(lifeImage, 690, 400, character_width, character_height);
+            spriteBatch.draw(lifeImage, 740, 400, character_width, character_height);
+        }
+
+        if (lives == 2) {
+            spriteBatch.draw(lifeImage, 640, 400, character_width, character_height);
+            spriteBatch.draw(lifeImage, 690, 400, character_width, character_height);
+        }
+
+        if (lives == 1) {
+            spriteBatch.draw(lifeImage, 640, 400, character_width, character_height);
+        }
+
+
         spriteBatch.end();
     }
 
