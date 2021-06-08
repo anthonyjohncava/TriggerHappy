@@ -1,4 +1,0 @@
-#Tue Jun 08 13:13:55 ACST 2021
-base.0=/Users/anthonyjohncava/Desktop/AndroidAss2/shooting_game/android/build/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
