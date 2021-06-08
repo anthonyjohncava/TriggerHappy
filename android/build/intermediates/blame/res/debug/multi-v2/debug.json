@@ -1,20 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/anthonyjohncava/Desktop/Assignment2/shooting_game/android/build/intermediates/res/merged/debug/values_values.arsc.flat",
+            "outputFile": "/Users/anthonyjohncava/Desktop/AndroidAss2/shooting_game/android/build/intermediates/res/merged/debug/values_values.arsc.flat",
             "map": [
                 {
-                    "source": "/Users/anthonyjohncava/Desktop/Assignment2/shooting_game/android/res/values/color.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "55",
-                        "endOffsets": "106"
-                    }
-                },
-                {
-                    "source": "/Users/anthonyjohncava/Desktop/Assignment2/shooting_game/android/res/values/strings.xml",
+                    "source": "/Users/anthonyjohncava/Desktop/AndroidAss2/shooting_game/android/res/values/strings.xml",
                     "from": {
                         "startLines": "3",
                         "startColumns": "4",
@@ -31,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/Users/anthonyjohncava/Desktop/Assignment2/shooting_game/android/res/values/styles.xml",
+                    "source": "/Users/anthonyjohncava/Desktop/AndroidAss2/shooting_game/android/res/values/styles.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -47,6 +37,16 @@
                         "endLines": "11",
                         "endColumns": "12",
                         "endOffsets": "620"
+                    }
+                },
+                {
+                    "source": "/Users/anthonyjohncava/Desktop/AndroidAss2/shooting_game/android/res/values/color.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
                     }
                 }
             ]
