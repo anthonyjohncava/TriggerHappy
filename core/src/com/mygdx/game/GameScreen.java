@@ -22,9 +22,10 @@ public class GameScreen implements Screen {
 
     MyGdxGame game; // Note it’s "MyGdxGame" not "Game"
 
-    TiledMap tiledMap;
-    OrthogonalTiledMapRenderer tiledMapRenderer;
-    OrthographicCamera camera;
+    // Variables for rendering the tiledMap.
+    private TiledMap tiledMap;                              // Loads the tiledMap.
+    private OrthogonalTiledMapRenderer tiledMapRenderer;    // Renders the tiledMap.
+    private OrthographicCamera camera;                      // Camera to show a specific portion of the world to the player.
 
     SpriteBatch spriteBatch;
     SpriteBatch uiBatch;
@@ -37,15 +38,27 @@ public class GameScreen implements Screen {
     }
 
     public void create() {
+        // Loads the tiledMap. ---------------------------------------------------------------------
+        tiledMap = new TmxMapLoader().load("testMap.tmx");
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
+        // Sets the camera. ------------------------------------------------------------------------
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth()*3-700, Gdx.graphics.getHeight()*3-400);
+        camera.position.set(Gdx.graphics.getWidth()+70, Gdx.graphics.getHeight()+70,0);
+
 
     }
 
     public void render(float f) {
         //Clear screen
-        Gdx.gl.glClearColor(0, 1, 0, 1);
+        Gdx.gl.glClearColor(135/255f, 206/255f, 235/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
+        camera.update();
+        // render tiledMap.
+        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.render();
     }
 
     @Override
