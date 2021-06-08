@@ -21,14 +21,27 @@ import com.badlogic.gdx.math.Vector3;
 public class GameScreen implements Screen {
 
     MyGdxGame game; // Note it’s "MyGdxGame" not "Game"
+    SpriteBatch spriteBatch;
+    SpriteBatch uiBatch;
 
     // Variables for rendering the tiledMap.
     private TiledMap tiledMap;                              // Loads the tiledMap.
     private OrthogonalTiledMapRenderer tiledMapRenderer;    // Renders the tiledMap.
     private OrthographicCamera camera;                      // Camera to show a specific portion of the world to the player.
 
-    SpriteBatch spriteBatch;
-    SpriteBatch uiBatch;
+    // Main character variables.
+    Texture runningSheet;                                   // Texture to hold the spritesheet.
+    TextureRegion[] runFrames;                              // Texture array for the running frames.
+    private static final int FRAME_COLS = 4;                // Number of columns of the running spritesheet.
+    private static final int FRAME_ROWS = 2;                // Number of rows of the running spritesheet.
+    private static int character_height = 90;              // Height of the character.
+    private final int character_width = 70;                // Width of the character.
+    private static int characterX = 350;                          // Character's X position.
+    private static int characterY = 15;                          // Character's Y position.
+    // Variables for the character running animation.
+    Animation runAnimation;		                            // Stores the array containing all of runFrames. It will also have the defined duration (in seconds) for each frame.
+    TextureRegion currentFrame;                             // Current frame to display.
+    float stateTime;                                        // The time the program has been running.
 
     float dt; //delta time
 
@@ -38,6 +51,8 @@ public class GameScreen implements Screen {
     }
 
     public void create() {
+        spriteBatch = new SpriteBatch();
+
         // Loads the tiledMap. ---------------------------------------------------------------------
         tiledMap = new TmxMapLoader().load("testMap.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -47,6 +62,25 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth()*3-700, Gdx.graphics.getHeight()*3-400);
         camera.position.set(Gdx.graphics.getWidth()+70, Gdx.graphics.getHeight()+70,0);
 
+        // Loads the Main Character. ----------------------------------------------------------------
+        runningSheet = new Texture(Gdx.files.internal("running.png"));
+
+        // Creates a 2D array of the given spritesheet
+        TextureRegion[][] temp = TextureRegion.split(runningSheet, runningSheet.getWidth() / FRAME_COLS, runningSheet.getHeight() / FRAME_ROWS);
+
+        // Sets the size of the array for the above code to only be a 1D array
+        runFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+
+        // Transfers each texture on the temp 2D array to the 1D runFrames array.
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                runFrames[index++] = temp[i][j];
+            }
+        }
+
+        // Sets the runFrames TextureTesgion into an Animation object, with a framerate set to 0.033, which is 30 frames per second.
+        runAnimation = new Animation(0.033f, runFrames);
 
     }
 
@@ -59,6 +93,17 @@ public class GameScreen implements Screen {
         // render tiledMap.
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+
+        // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
+        stateTime += Gdx.graphics.getDeltaTime();
+        currentFrame = (TextureRegion) runAnimation.getKeyFrame(stateTime, true);
+
+
+
+        spriteBatch.begin();
+        // Draws the main Character based on its state.
+        spriteBatch.draw(currentFrame, characterX, characterY, character_width, character_height);
+        spriteBatch.end();
     }
 
     @Override
