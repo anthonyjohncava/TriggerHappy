@@ -35,10 +35,12 @@ public class GameScreen implements Screen {
     // Main character variables.
     Texture runningSheet;                                   // Texture to hold the spritesheet.
     TextureRegion[] runFrames;                              // Texture array for the running frames.
-    private static final int FRAME_COLS = 4;                // Number of columns of the running spritesheet.
-    private static final int FRAME_ROWS = 2;                // Number of rows of the running spritesheet.
-    private static int character_height = 90;              // Height of the character.
-    private final int character_width = 70;                // Width of the character.
+    private static final int FRAME_COLS = 2;                // Number of columns of the running spritesheet.
+    private static final int FRAME_ROWS = 1;                // Number of rows of the running spritesheet.
+    private static int character_height = 160;              // Height of the character.
+    private static int heart_height = 90;
+    private static int heart_width = 75;
+    private final int character_width = 75;                // Width of the character.
     private static int characterX = 350;                          // Character's X position.
     private static int characterY = 15;                          // Character's Y position.
     // Variables for the character running animation.
@@ -73,7 +75,7 @@ public class GameScreen implements Screen {
         camera.position.set(Gdx.graphics.getWidth()+70, Gdx.graphics.getHeight()+70,0);
 
         // Loads the Main Character. ----------------------------------------------------------------
-        runningSheet = new Texture(Gdx.files.internal("running.png"));
+        runningSheet = new Texture(Gdx.files.internal("firing.png"));
 
         // Creates a 2D array of the given spritesheet
         TextureRegion[][] temp = TextureRegion.split(runningSheet, runningSheet.getWidth() / FRAME_COLS, runningSheet.getHeight() / FRAME_ROWS);
@@ -90,7 +92,7 @@ public class GameScreen implements Screen {
         }
 
         // Sets the runFrames TextureTesgion into an Animation object, with a framerate set to 0.033, which is 30 frames per second.
-        runAnimation = new Animation(0.033f, runFrames);
+        runAnimation = new Animation(0.5f, runFrames);
 
         // Heart
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
@@ -119,18 +121,18 @@ public class GameScreen implements Screen {
         spriteBatch.draw(currentFrame, characterX, characterY, character_width, character_height);
 
         if (lives == 3) {
-            spriteBatch.draw(lifeImage, 640, 400, character_width, character_height);
-            spriteBatch.draw(lifeImage, 690, 400, character_width, character_height);
-            spriteBatch.draw(lifeImage, 740, 400, character_width, character_height);
+            spriteBatch.draw(lifeImage, 640, 400, heart_width, heart_height);
+            spriteBatch.draw(lifeImage, 690, 400, heart_width, heart_height);
+            spriteBatch.draw(lifeImage, 740, 400, heart_width, heart_height);
         }
 
         if (lives == 2) {
-            spriteBatch.draw(lifeImage, 640, 400, character_width, character_height);
-            spriteBatch.draw(lifeImage, 690, 400, character_width, character_height);
+            spriteBatch.draw(lifeImage, 640, 400, heart_width, heart_height);
+            spriteBatch.draw(lifeImage, 690, 400, heart_width, heart_height);
         }
 
         if (lives == 1) {
-            spriteBatch.draw(lifeImage, 640, 400, character_width, character_height);
+            spriteBatch.draw(lifeImage, 640, 400, heart_width, heart_height);
         }
 
 
