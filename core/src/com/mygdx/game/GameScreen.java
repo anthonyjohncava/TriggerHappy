@@ -19,6 +19,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 
+import sprites.Enemy;
+
 public class GameScreen implements Screen {
 
     private Music backgroundMusic;                          // Background music while playing the game.
@@ -26,6 +28,8 @@ public class GameScreen implements Screen {
     MyGdxGame game; // Note it’s "MyGdxGame" not "Game"
     SpriteBatch spriteBatch;
     SpriteBatch uiBatch;
+
+    private Enemy enemy1;
 
     // Variables for rendering the tiledMap.
     private TiledMap tiledMap;                              // Loads the tiledMap.
@@ -62,7 +66,6 @@ public class GameScreen implements Screen {
 
     public void create() {
         loadMusic();
-
         spriteBatch = new SpriteBatch();
 
         // Loads the tiledMap. ---------------------------------------------------------------------
@@ -74,29 +77,11 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth()*3-700, Gdx.graphics.getHeight()*3-400);
         camera.position.set(Gdx.graphics.getWidth()+70, Gdx.graphics.getHeight()+70,0);
 
-        // Loads the Main Character. ----------------------------------------------------------------
-        runningSheet = new Texture(Gdx.files.internal("firing_half.png"));
-
-        // Creates a 2D array of the given spritesheet
-        TextureRegion[][] temp = TextureRegion.split(runningSheet, runningSheet.getWidth() / FRAME_COLS, runningSheet.getHeight() / FRAME_ROWS);
-
-        // Sets the size of the array for the above code to only be a 1D array
-        runFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-
-        // Transfers each texture on the temp 2D array to the 1D runFrames array.
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                runFrames[index++] = temp[i][j];
-            }
-        }
-
-        // Sets the runFrames TextureTesgion into an Animation object, with a framerate set to 0.033, which is 30 frames per second.
-        runAnimation = new Animation(0.5f, runFrames);
+        //Enemy
+        enemy1 = new Enemy(0,410);
 
         // Heart
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
-
         lives = 3;
     }
 
@@ -112,18 +97,12 @@ public class GameScreen implements Screen {
 
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
-        currentFrame = (TextureRegion) runAnimation.getKeyFrame(stateTime, true);
 
-        // Get position of click
-        int click_location_X = Gdx.input.getX();
-        int click_location_Y =  Gdx.input.getY();
 
-        Gdx.app.log("X_pos", Integer.toString(click_location_X));
-        Gdx.app.log("Y_pos", Integer.toString(click_location_Y));
 
         spriteBatch.begin();
-        // Draws the main Character based on its state.
-        spriteBatch.draw(currentFrame, characterX, characterY, character_width, character_height);
+
+        spriteBatch.draw(enemy1.getEnemy(),enemy1.getPosition().x,enemy1.getPosition().y);
 
         if (lives == 3) {
             spriteBatch.draw(lifeImage, 640, 400, heart_width, heart_height);
@@ -143,6 +122,9 @@ public class GameScreen implements Screen {
 
         spriteBatch.end();
     }
+
+
+
 
     private void loadMusic() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background_music.mp3"));
