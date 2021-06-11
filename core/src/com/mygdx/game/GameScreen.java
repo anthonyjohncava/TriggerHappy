@@ -47,6 +47,9 @@ public class GameScreen implements Screen {
     private Texture gunTrigger;
     private Sound shootSound;
 
+    Enemy enemy1;
+
+
     MyGdxGame game;
 
     // constructor to keep a reference to the main Game class
@@ -73,6 +76,8 @@ public class GameScreen implements Screen {
 
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
 
+        enemy1 = new Enemy(93, 90 );
+
     }
 
     public void render(float f) {
@@ -90,6 +95,10 @@ public class GameScreen implements Screen {
 
 
         batch.begin();
+
+        //Draw enemies
+        batch.draw(enemy1.getEnemy(),enemy1.getPosition().x,enemy1.getPosition().y);
+
 
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
