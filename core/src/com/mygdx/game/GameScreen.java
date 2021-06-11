@@ -51,9 +51,16 @@ public class GameScreen implements Screen {
     // Heart variables
     private Texture lifeImage;
 
+    // Firing variables
+    private Texture gunTrigger;
+
     float dt; //delta time
 
     private int lives;
+
+    // Test
+    private static int height;
+    private static int width;
 
     // constructor to keep a reference to the main Game class
     public GameScreen(MyGdxGame game) {
@@ -61,7 +68,7 @@ public class GameScreen implements Screen {
     }
 
     public void create() {
-        loadMusic();
+//        loadMusic();
 
         spriteBatch = new SpriteBatch();
 
@@ -97,7 +104,14 @@ public class GameScreen implements Screen {
         // Heart
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
 
+        // Trigger
+        gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
+
         lives = 3;
+
+        // Test
+        height = Gdx.graphics.getHeight();
+        width = Gdx.graphics.getWidth();
     }
 
     public void render(float f) {
@@ -114,14 +128,17 @@ public class GameScreen implements Screen {
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) runAnimation.getKeyFrame(stateTime, true);
 
-        // Get position of click
-        int click_location_X = Gdx.input.getX();
+//        // Get position of click
+        int click_location_X =  Gdx.input.getX();
         int click_location_Y =  Gdx.input.getY();
-
-        Gdx.app.log("X_pos", Integer.toString(click_location_X));
-        Gdx.app.log("Y_pos", Integer.toString(click_location_Y));
+//
+//        Gdx.app.log("X_pos", Integer.toString(click_location_X));
+//        Gdx.app.log("Y_pos", Integer.toString(click_location_Y));
 
         spriteBatch.begin();
+
+        spriteBatch.draw(gunTrigger, click_location_X, height - click_location_Y, heart_width, heart_height);
+
         // Draws the main Character based on its state.
         spriteBatch.draw(currentFrame, characterX, characterY, character_width, character_height);
 
