@@ -16,14 +16,14 @@ public class Enemy {
     private Vector3 position;
 
 
-    private Animation fireAnimation;
+    private EnemyAnimation fireAnimation;
 
     public Enemy(int x,int y){
         this.isAlive = true;
         this.hitpoints = 100;
         this.accuracy = 100; //100 accuracy will always hit
-        this.texture = new Texture("enemy_pos1.png");
-        this.textureRegion = new TextureRegion(texture);
+        this.texture = new Texture("enemy_sprite.png");
+        fireAnimation = new EnemyAnimation(new TextureRegion(this.texture),2,3f, 1,true);
         this.position = new Vector3(x,y,0);
 
     }
@@ -32,13 +32,12 @@ public class Enemy {
         return position;
     }
 
-    public void fireGun(){
-        this.texture = new Texture("enemy_pos2.png");
-        this.textureRegion = new TextureRegion(texture);
+    public void update(float dt){
+        fireAnimation.update(dt);
     }
 
     public TextureRegion getEnemy() {
-        return this.textureRegion;
+        return fireAnimation.getFrame();
     }
 
 }

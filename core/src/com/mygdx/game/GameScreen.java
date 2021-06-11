@@ -42,7 +42,6 @@ public class GameScreen implements Screen {
     private static int heart_height = 90;
     private static int heart_width = 75;
 
-    float dt; //delta time
 
     private Texture gunTrigger;
     private Sound shootSound;
@@ -107,6 +106,8 @@ public class GameScreen implements Screen {
             shootSound.play();
         }
 
+
+
         if (lives == 3) {
             batch.draw(lifeImage, 640, 400, heart_width, heart_height);
             batch.draw(lifeImage, 690, 400, heart_width, heart_height);
@@ -122,9 +123,8 @@ public class GameScreen implements Screen {
             batch.draw(lifeImage, 640, 400, heart_width, heart_height);
         }
 
-
+        enemy1.update(Gdx.graphics.getDeltaTime());
         batch.end();
-
 
     }
 
