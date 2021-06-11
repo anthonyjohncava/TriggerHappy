@@ -48,8 +48,9 @@ public class MenuScreen implements Screen{
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
-                exitBtn.remove();
                 game.setScreen(MyGdxGame.gameScreen);
+                button.remove();
+                exitBtn.remove();
             }
         });
         exitBtn.addListener(new ClickListener()
