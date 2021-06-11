@@ -37,12 +37,12 @@ public class GameScreen implements Screen {
     TextureRegion[] runFrames;                              // Texture array for the running frames.
     private static final int FRAME_COLS = 2;                // Number of columns of the running spritesheet.
     private static final int FRAME_ROWS = 1;                // Number of rows of the running spritesheet.
-    private static int character_height = 160;              // Height of the character.
+    private static int character_height = 39;              // Height of the character.
+    private final int character_width = 34;                // Width of the character.
     private static int heart_height = 90;
     private static int heart_width = 75;
-    private final int character_width = 75;                // Width of the character.
-    private static int characterX = 350;                          // Character's X position.
-    private static int characterY = 15;                          // Character's Y position.
+    private static int characterX = 220;                          // Character's X position.
+    private static int characterY = 89;                          // Character's Y position.
     // Variables for the character running animation.
     Animation runAnimation;		                            // Stores the array containing all of runFrames. It will also have the defined duration (in seconds) for each frame.
     TextureRegion currentFrame;                             // Current frame to display.
@@ -75,7 +75,7 @@ public class GameScreen implements Screen {
         camera.position.set(Gdx.graphics.getWidth()+70, Gdx.graphics.getHeight()+70,0);
 
         // Loads the Main Character. ----------------------------------------------------------------
-        runningSheet = new Texture(Gdx.files.internal("firing.png"));
+        runningSheet = new Texture(Gdx.files.internal("firing_half.png"));
 
         // Creates a 2D array of the given spritesheet
         TextureRegion[][] temp = TextureRegion.split(runningSheet, runningSheet.getWidth() / FRAME_COLS, runningSheet.getHeight() / FRAME_ROWS);
