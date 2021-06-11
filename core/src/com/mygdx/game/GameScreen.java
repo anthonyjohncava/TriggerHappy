@@ -96,6 +96,7 @@ public class GameScreen implements Screen {
         //Draw enemies
         if (enemy1.isAlive()) {
             batch.draw(enemy1.getEnemy(),enemy1.getPosition().x,enemy1.getPosition().y);
+            enemy1.update(Gdx.graphics.getDeltaTime());
         }
 
         if (Gdx.input.isTouched()) {
@@ -123,7 +124,7 @@ public class GameScreen implements Screen {
             batch.draw(lifeImage, 640, 400, heart_width, heart_height);
         }
 
-//        enemy1.update(Gdx.graphics.getDeltaTime());
+
         batch.end();
 
     }

@@ -14,6 +14,8 @@ public class Enemy {
     private Texture texture;
     private TextureRegion textureRegion;
     private Vector3 position;
+    private int height;
+    private int width;
 
 
     private EnemyAnimation fireAnimation;
@@ -25,6 +27,8 @@ public class Enemy {
         this.texture = new Texture("enemy_sprite.png");
         fireAnimation = new EnemyAnimation(new TextureRegion(this.texture),2,3f, 1,true);
         this.position = new Vector3(x,y,0);
+        this.height = 39;
+        this.width = 24;
 
     }
 
@@ -37,7 +41,11 @@ public class Enemy {
     }
 
     public void checkCollision(Vector3 mouseClick) {
-        hit();
+        if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.width) {
+            if (mouseClick.y >= this.position.y && mouseClick.y <= this.position.y + this.height) {
+                this.hit();
+            }
+        }
     }
 
 
