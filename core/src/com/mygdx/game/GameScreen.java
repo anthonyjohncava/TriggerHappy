@@ -55,9 +55,20 @@ public class GameScreen implements Screen {
     // Heart variables
     private Texture lifeImage;
 
+    // Firing variables
+    private Texture gunTrigger;
+
     float dt; //delta time
 
     private int lives;
+
+    // Test
+    private static int height;
+    private static int width;
+
+    // Get position of click
+    private int click_location_X;
+    private int click_location_Y;
 
     // constructor to keep a reference to the main Game class
     public GameScreen(MyGdxGame game) {
@@ -65,7 +76,9 @@ public class GameScreen implements Screen {
     }
 
     public void create() {
-        loadMusic();
+
+        //loadMusic();
+
         spriteBatch = new SpriteBatch();
 
         // Loads the tiledMap. ---------------------------------------------------------------------
@@ -82,7 +95,16 @@ public class GameScreen implements Screen {
 
         // Heart
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
+
+        // Trigger
+        gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
+
+
         lives = 3;
+
+        // Test
+        height = Gdx.graphics.getHeight();
+        width = Gdx.graphics.getWidth();
     }
 
     public void render(float f) {
@@ -98,11 +120,16 @@ public class GameScreen implements Screen {
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
 
+        
+        //click_location_X =  Gdx.input.getX();
+        //click_location_Y =  Gdx.input.getY();
 
 
         spriteBatch.begin();
 
         spriteBatch.draw(enemy1.getEnemy(),enemy1.getPosition().x,enemy1.getPosition().y);
+
+
 
         if (lives == 3) {
             spriteBatch.draw(lifeImage, 640, 400, heart_width, heart_height);
