@@ -28,6 +28,19 @@ public class Enemy {
 
     }
 
+    public void hit() {
+        isAlive = false;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void checkCollision(Vector3 mouseClick) {
+        hit();
+    }
+
+
     public Vector3 getPosition() {
         return position;
     }

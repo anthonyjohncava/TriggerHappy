@@ -46,8 +46,7 @@ public class GameScreen implements Screen {
     private Texture gunTrigger;
     private Sound shootSound;
 
-    Enemy enemy1;
-
+    public Enemy enemy1;
 
     MyGdxGame game;
 
@@ -92,20 +91,21 @@ public class GameScreen implements Screen {
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
 
-
         batch.begin();
 
         //Draw enemies
-        batch.draw(enemy1.getEnemy(),enemy1.getPosition().x,enemy1.getPosition().y);
-
+        if (enemy1.isAlive()) {
+            batch.draw(enemy1.getEnemy(),enemy1.getPosition().x,enemy1.getPosition().y);
+        }
 
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), 480 - Gdx.input.getY(), 0);
             batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
             shootSound.play();
-        }
+            enemy1.checkCollision(touchPos);
 
+        }
 
 
         if (lives == 3) {
@@ -123,7 +123,7 @@ public class GameScreen implements Screen {
             batch.draw(lifeImage, 640, 400, heart_width, heart_height);
         }
 
-        enemy1.update(Gdx.graphics.getDeltaTime());
+//        enemy1.update(Gdx.graphics.getDeltaTime());
         batch.end();
 
     }
