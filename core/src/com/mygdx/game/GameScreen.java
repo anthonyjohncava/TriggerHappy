@@ -114,7 +114,12 @@ public class GameScreen implements Screen {
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) runAnimation.getKeyFrame(stateTime, true);
 
+        // Get position of click
+        int click_location_X = Gdx.input.getX();
+        int click_location_Y =  Gdx.input.getY();
 
+        Gdx.app.log("X_pos", Integer.toString(click_location_X));
+        Gdx.app.log("Y_pos", Integer.toString(click_location_Y));
 
         spriteBatch.begin();
         // Draws the main Character based on its state.
