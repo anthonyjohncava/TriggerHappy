@@ -34,25 +34,24 @@ public class MenuScreen implements Screen{
         button.setWidth(300f);
         button.setHeight(100f);
         button.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 0f);
-        stage.addActor(button);
-        Gdx.input.setInputProcessor(stage);
+
+
+
+
+        final TextButton exitBtn = new TextButton("EXIT", skin);
+        exitBtn.setWidth(300f);
+        exitBtn.setHeight(100f);
+        exitBtn.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 120f);
 
         button.addListener(new ClickListener()
         {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
+                exitBtn.remove();
                 game.setScreen(MyGdxGame.gameScreen);
             }
         });
-
-        final TextButton exitBtn = new TextButton("EXIT", skin);
-        exitBtn.setWidth(300f);
-        exitBtn.setHeight(100f);
-        exitBtn.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 120f);
-        stage.addActor(exitBtn);
-        Gdx.input.setInputProcessor(stage);
-
         exitBtn.addListener(new ClickListener()
         {
             @Override
@@ -61,6 +60,10 @@ public class MenuScreen implements Screen{
                 Gdx.app.exit();
             }
         });
+
+        stage.addActor(button);
+        stage.addActor(exitBtn);
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
