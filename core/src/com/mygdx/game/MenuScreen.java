@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MenuScreen implements Screen{
     MyGdxGame game; // Note it’s "MyGdxGame" not "Game"
-    private SpriteBatch batch;
+
     private Skin skin;
     private Stage stage;
 
@@ -27,15 +27,13 @@ public class MenuScreen implements Screen{
 
     public void create() {
         Gdx.app.log("MenuScreen: ","menuScreen create");
-        batch = new SpriteBatch();
+
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         stage = new Stage();
         final TextButton button = new TextButton("PLAY", skin);
         button.setWidth(300f);
         button.setHeight(100f);
         button.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 0f);
-
-
 
 
         final TextButton exitBtn = new TextButton("EXIT", skin);
@@ -77,9 +75,7 @@ public class MenuScreen implements Screen{
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
         stage.draw();
-        batch.end();
     }
 
     @Override
