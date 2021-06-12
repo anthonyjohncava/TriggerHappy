@@ -21,6 +21,8 @@ public class Enemy {
     public enum EnemyState { IDLE,FIRING }
     public EnemyState currentState;
 
+    private int timeStart = 0;
+    private float stateTime;
 
     public Enemy(){
         this.currentState = EnemyState.IDLE;
@@ -53,11 +55,23 @@ public class Enemy {
         return position;
     }
 
-    public void update(float dt){
+    public int update(float dt){
 
+        stateTime += dt;
+
+        if (timeStart + 5 == (int)stateTime) {
+            timeStart = (int)stateTime;
+            return 1;
+        }
+
+        Gdx.app.log("_test: (deltaTime)", String.valueOf(dt));
+        Gdx.app.log("_test: (stateTime)", String.valueOf(stateTime));
+
+        return 0;
     }
 
     public void fire(){
+
         this.textureRegion = new TextureRegion(texture,24,0,this.width,this.height);
     }
 

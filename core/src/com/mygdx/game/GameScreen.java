@@ -100,13 +100,9 @@ public class GameScreen implements Screen {
         for(Enemy enemy: enemies){
             if(enemy.isAlive()){
                 batch.draw(enemy.getEnemy(),enemy.getPosition().x,enemy.getPosition().y);
-                //trigger firing after 10 statetime
-                if(stateTime > 10){
-                    enemy.fire();
-                }
+                lives -= enemy.update(Gdx.graphics.getDeltaTime());
             }
         }
-
 
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
