@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
 
     private Texture gunTrigger;
     private Sound shootSound;
+    private Sound gameOverSound;
 
     private Texture bloodshot;
     private Texture gameOverText;
@@ -71,6 +72,8 @@ public class GameScreen implements Screen {
 
     public void create() {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
+
         batch = new SpriteBatch();
 
         //prepare locations
@@ -106,7 +109,7 @@ public class GameScreen implements Screen {
 
     public void render(float f) {
         //Clear screen
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
@@ -173,14 +176,16 @@ public class GameScreen implements Screen {
                 batch.draw(lifeImage, 640, 400, heart_width, heart_height);
             }
 
-            if (lives == 0) {
+            if (lives < 1) {
                 state = "Game Over";
+                gameOverSound.setVolume(gameOverSound.play(), 200);
+                gameOverSound.play();
 
             }
         } else {
             batch.draw(gameOverText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         }
-        
+
         batch.end();
 
     }
