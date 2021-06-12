@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import sprites.Enemy;
@@ -53,6 +54,8 @@ public class GameScreen implements Screen {
     private Array<Enemy> enemies;
     private Array<EnemyLocation> enemyLocations;
 
+    private ArrayList<Integer> exclude;
+
 
     // constructor to keep a reference to the main Game class
     public GameScreen(MyGdxGame game) {
@@ -67,7 +70,10 @@ public class GameScreen implements Screen {
         enemyLocations = new Array<EnemyLocation>();
         enemyLocations.add(new EnemyLocation(93,90));
         enemyLocations.add(new EnemyLocation(225,90));
-
+        enemyLocations.add(new EnemyLocation(425,90));
+        enemyLocations.add(new EnemyLocation(625,90));
+        enemyLocations.add(new EnemyLocation(225,200));
+        enemyLocations.add(new EnemyLocation(225,400));
 
         //prepare enemies
         enemies = new Array<Enemy>();
@@ -106,20 +112,9 @@ public class GameScreen implements Screen {
         batch.begin();
 
 
-        //Draw enemies on every location
-        Enemy createdEnemy = this.spawnEnemy(stateTime);
+        //Spawn enemies on every available location
+        this.spawnEnemy(stateTime);
 
-        //set enemy randomly on existing locations
-        locationSize = enemyLocations.size - 1;
-        EnemyLocation addToLocation;
-        int random = new Random().nextInt((locationSize - 0) + 1) + 0;
-        addToLocation = enemyLocations.get(random);
-
-        //add enemy on a location without enemy
-        if(addToLocation.hasEnemy() == false){
-            //we add if there is no enemy yet
-            addToLocation.setEnemy(createdEnemy);
-        }
 
         //display enemy on locations
         for(EnemyLocation loc: enemyLocations) {
@@ -163,23 +158,46 @@ public class GameScreen implements Screen {
 
     }
 
-
     private void loadMusic() {
 
     }
 
-    private Enemy spawnEnemy(float dt){
+    private void spawnEnemy(float dt){
         //logic for spawning enemy
         Enemy spawned = null;
+        locationSize = enemyLocations.size - 1;
+        EnemyLocation addToLocation;
 
-        if(spawnCounter + 5 == (int)dt){
+        if(spawnCounter + 3 == (int)dt){
             spawnCounter += (int)dt;
             spawned = new Enemy();
             enemies.add(spawned);
         }
 
-        return spawned;
+        //set enemy randomly on available locations
+        if(spawned!=null){
+            int random = new Random().nextInt((locationSize - 0) + 1) + 0;
+            addToLocation = enemyLocations.get(random);
+            if(addToLocation.hasEnemy() == false){
+                //we add enemy to this location
+                addToLocation.setEnemy(spawned);
+            }
+        }
+
+
     }
+
+    private EnemyLocation getAvailableLocation(){
+        EnemyLocation available = null;
+        for(EnemyLocation l: enemyLocations) {
+            if(l.hasEnemy() == false){
+                available = l;
+                break;
+            }
+        }
+        return available;
+    }
+
 
 
     @Override

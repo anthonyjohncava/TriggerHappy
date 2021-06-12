@@ -6,6 +6,7 @@ public class EnemyLocation {
     private boolean isOccupied = false;
     private Vector3 position;
     private Enemy enemyContained = null;
+    public static int occupiedLocations = 0;
 
     public EnemyLocation(float x,float y){
         this.position = new Vector3(x,y,0);
@@ -18,6 +19,7 @@ public class EnemyLocation {
         }
         this.enemyContained = e;
         this.isOccupied = true;
+        occupiedLocations+=1;
         return true;
     }
 
@@ -49,6 +51,7 @@ public class EnemyLocation {
                     //kill the enemy and empty the location
                     this.enemyContained.hit();
                     this.enemyContained = null;
+                    this.occupiedLocations-=1;
                     this.isOccupied = false;
                 }
             }
