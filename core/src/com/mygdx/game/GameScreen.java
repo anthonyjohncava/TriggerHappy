@@ -19,10 +19,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import sprites.Enemy;
 
 public class GameScreen implements Screen {
+    MyGdxGame game;
     SpriteBatch batch;
 
     // Variables for rendering the tiledMap.
@@ -46,9 +48,9 @@ public class GameScreen implements Screen {
     private Texture gunTrigger;
     private Sound shootSound;
 
-    public Enemy enemy1;
+    private Array<Enemy> enemies;
 
-    MyGdxGame game;
+
 
     // constructor to keep a reference to the main Game class
     public GameScreen(MyGdxGame game) {
@@ -58,6 +60,9 @@ public class GameScreen implements Screen {
     public void create() {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         batch = new SpriteBatch();
+
+        enemies = new Array<Enemy>();
+        this.spawnEnemy();
 
         // Loads the tiledMap. ---------------------------------------------------------------------
         tiledMap = new TmxMapLoader().load("testMap.tmx");
@@ -73,8 +78,6 @@ public class GameScreen implements Screen {
         lives = 3;
 
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
-
-        enemy1 = new Enemy(93, 90 );
 
     }
 
@@ -92,19 +95,28 @@ public class GameScreen implements Screen {
         stateTime += Gdx.graphics.getDeltaTime();
 
         batch.begin();
-
         //Draw enemies
-        if (enemy1.isAlive()) {
-            batch.draw(enemy1.getEnemy(),enemy1.getPosition().x,enemy1.getPosition().y);
-            enemy1.update(Gdx.graphics.getDeltaTime());
+
+        for(Enemy enemy: enemies){
+            if(enemy.isAlive()){
+                batch.draw(enemy.getEnemy(),enemy.getPosition().x,enemy.getPosition().y);
+                //trigger firing after 10 statetime
+                if(stateTime > 10){
+                    enemy.fire();
+                }
+            }
         }
+
 
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), 480 - Gdx.input.getY(), 0);
             batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
             shootSound.play();
-            enemy1.checkCollision(touchPos);
+
+            for(Enemy enemy: enemies){
+                enemy.checkCollision(touchPos);
+            }
 
         }
 
@@ -134,6 +146,12 @@ public class GameScreen implements Screen {
 
     }
 
+    private void spawnEnemy(){
+        //225,90
+        //enemy1 = new Enemy(93, 90 );
+        enemies.add(new Enemy());
+    }
+
     @Override
     public void dispose() { }
 
@@ -150,12 +168,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.app.log("GameScreen: ","gameScreen show called");
         create();
     }
 
     @Override
     public void hide() {
-        Gdx.app.log("GameScreen: ","gameScreen hide called");
+        //Gdx.app.log("GameScreen: ","gameScreen hide called");
     }
 }

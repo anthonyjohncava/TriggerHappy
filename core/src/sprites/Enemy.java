@@ -2,35 +2,35 @@ package sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
 public class Enemy {
-
-    private boolean isAlive;
-    private int hitpoints;
-    private int accuracy; //rate to hit the player
+    //Sprites
     private Texture texture;
     private TextureRegion textureRegion;
+    private int height = 39;
+    private int width = 24;
+
+    //Enemy Status
+    private boolean isAlive;
+    private int accuracy; //rate to hit the player
     private Vector3 position;
-    private int height;
-    private int width;
+
+    //Enemy States
+    public enum EnemyState { IDLE,FIRING }
+    public EnemyState currentState;
 
 
-    private EnemyAnimation fireAnimation;
-
-    public Enemy(int x,int y){
+    public Enemy(){
+        this.currentState = EnemyState.IDLE;
         this.isAlive = true;
-        this.hitpoints = 100;
         this.accuracy = 100; //100 accuracy will always hit
         this.texture = new Texture("enemy_sprite.png");
-        fireAnimation = new EnemyAnimation(new TextureRegion(this.texture),2,3f, 1,true);
-        this.position = new Vector3(x,y,0);
-        this.height = 39;
-        this.width = 24;
-
+        this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
+        this.position = new Vector3(93,90,0);
     }
+
 
     public void hit() {
         isAlive = false;
@@ -54,11 +54,19 @@ public class Enemy {
     }
 
     public void update(float dt){
-        fireAnimation.update(dt);
+
+    }
+
+    public void fire(){
+        this.textureRegion = new TextureRegion(texture,24,0,this.width,this.height);
+    }
+
+    public void idle(){
+        this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
     }
 
     public TextureRegion getEnemy() {
-        return fireAnimation.getFrame();
+        return this.textureRegion;
     }
 
 }
