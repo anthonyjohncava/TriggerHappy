@@ -19,6 +19,11 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 
@@ -54,6 +59,8 @@ public class GameScreen implements Screen {
 
     private Texture bloodshot;
     private Texture gameOverText;
+    private Skin skin;
+    private Stage stage;
 
     private Array<Enemy> enemies;
     private Array<EnemyLocation> enemyLocations;
@@ -73,6 +80,8 @@ public class GameScreen implements Screen {
     public void create() {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
+
+
 
         batch = new SpriteBatch();
 
@@ -104,6 +113,27 @@ public class GameScreen implements Screen {
         gameOverText = new Texture(Gdx.files.internal("gameover.png"));
         bloodshot = new Texture(Gdx.files.internal("bloodstain.png"));
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
+
+
+        // Game over buttons
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        stage = new Stage();
+        final TextButton exitBtn = new TextButton("EXIT", skin);
+        exitBtn.setWidth(300f);
+        exitBtn.setHeight(100f);
+        exitBtn.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 120f);
+
+        exitBtn.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked (InputEvent event, float x, float y)
+            {
+                Gdx.app.exit();
+            }
+        });
+
+        stage.addActor(exitBtn);
+        Gdx.input.setInputProcessor(stage);
 
     }
 
@@ -187,6 +217,11 @@ public class GameScreen implements Screen {
         }
 
         batch.end();
+
+        if (state == "Game Over") {
+            stage.draw();
+
+        }
 
     }
 
