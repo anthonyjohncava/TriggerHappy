@@ -1,6 +1,7 @@
 package sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -26,6 +27,7 @@ public class Enemy {
     private int timeStart = 0;
     private float stateTime;
     private Sound enemyFireSound;
+    private Sound enemyHurtSound;
     public Enemy(){
         this.currentState = EnemyState.IDLE;
         this.isAlive = true;
@@ -33,11 +35,15 @@ public class Enemy {
         this.texture = new Texture("enemy_sprite.png");
         this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
         enemyFireSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
+        enemyHurtSound = Gdx.audio.newSound(Gdx.files.internal("pain.wav"));
+        enemyHurtSound.setVolume(enemyHurtSound.play(), 200);
     }
 
 
     public void hit() {
+        this.playHurtSound();
         isAlive = false;
+
     }
 
     public boolean isAlive() {
@@ -89,4 +95,7 @@ public class Enemy {
         return this.height;
     }
 
+    public void playHurtSound() {
+        enemyHurtSound.play();
+    }
 }

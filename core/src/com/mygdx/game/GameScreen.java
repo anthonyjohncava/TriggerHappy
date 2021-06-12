@@ -135,7 +135,6 @@ public class GameScreen implements Screen {
 
                 if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
                     lives -= 1;
-                    // Show damage on screen
                     state = "damaged";
                 }
 
