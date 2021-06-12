@@ -68,9 +68,9 @@ public class GameScreen implements Screen {
     private ArrayList<Integer> available;
 
 
-    String state = "ok";
-    int timeStart = 0;
-    int spawnTimer = 0;
+    String state;
+    int timeStart;
+    int spawnTimer;
 
     private TextButton button;
     private TextButton exitBtn;
@@ -85,6 +85,9 @@ public class GameScreen implements Screen {
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
 
+        state = "ok";
+        timeStart = 0;
+        spawnTimer = 0;
 
         batch = new SpriteBatch();
 
@@ -145,7 +148,8 @@ public class GameScreen implements Screen {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
-                game.setScreen(MyGdxGame.menuScreen);
+//                game.setScreen(MyGdxGame.gameScreen);
+                create();
             }
         });
 
