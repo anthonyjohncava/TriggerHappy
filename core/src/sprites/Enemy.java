@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.Random;
+
 public class Enemy {
     //Sprites
     private Texture texture;
@@ -61,7 +63,9 @@ public class Enemy {
 
         if (timeStart + 5 == (int)stateTime) {
             timeStart = (int)stateTime;
-            return 1;
+            return fire();
+        } else {
+            this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
         }
 
         Gdx.app.log("_test: (deltaTime)", String.valueOf(dt));
@@ -70,9 +74,15 @@ public class Enemy {
         return 0;
     }
 
-    public void fire(){
-
+    public int fire(){
         this.textureRegion = new TextureRegion(texture,24,0,this.width,this.height);
+        // accuracy at 50%
+        int random = new Random().nextInt((1-0) + 1)+0;
+
+        Gdx.app.log("_fire: ", String.valueOf(random));
+
+
+        return random;
     }
 
     public void idle(){
