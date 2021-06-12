@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sprites.Enemy;
 import sprites.EnemyLocation;
@@ -58,9 +60,11 @@ public class GameScreen implements Screen {
 
 
     private ArrayList<Integer> exclude;
+    Timer timer = new Timer();
 
     String state = "ok";
     int timeStart = 0;
+    int spawnTimer = 0;
 
 
     // constructor to keep a reference to the main Game class
@@ -77,9 +81,9 @@ public class GameScreen implements Screen {
         enemyLocations.add(new EnemyLocation(93,90));
         enemyLocations.add(new EnemyLocation(225,90));
         enemyLocations.add(new EnemyLocation(425,90));
-        enemyLocations.add(new EnemyLocation(625,90));
-        enemyLocations.add(new EnemyLocation(225,200));
-        enemyLocations.add(new EnemyLocation(225,400));
+        //enemyLocations.add(new EnemyLocation(625,90));
+        //enemyLocations.add(new EnemyLocation(225,200));
+        //enemyLocations.add(new EnemyLocation(225,400));
 
         //prepare enemies
         enemies = new Array<Enemy>();
@@ -115,12 +119,10 @@ public class GameScreen implements Screen {
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
 
+        //spawn enemy logic
+        this.spawnEnemy(stateTime);
 
         batch.begin();
-
-
-        //Spawn enemies on every available location
-        this.spawnEnemy(stateTime);
 
 
         //display enemy on locations
@@ -185,25 +187,31 @@ public class GameScreen implements Screen {
 
     }
 
-    private void spawnEnemy(float dt){
-        //logic for spawning enemy
-        Enemy spawned = null;
-        locationSize = enemyLocations.size - 1;
-        EnemyLocation addToLocation;
 
-        if(spawnCounter + 3 == (int)dt){
-            spawnCounter += (int)dt;
+
+    private void spawnEnemy(float dt){
+
+        Gdx.app.log("statetime",String.valueOf(dt));
+        Gdx.app.log("deltatime",String.valueOf(Gdx.graphics.getDeltaTime()));
+
+        //logic for spawning enemy every 3 seconds
+        if (spawnTimer + 3 == (int)dt) {
+            spawnTimer = (int)dt;
+            Enemy spawned = null;
+            locationSize = enemyLocations.size - 1;
+            EnemyLocation addToLocation;
+            //create enemy
             spawned = new Enemy();
             enemies.add(spawned);
-        }
 
-        //set enemy randomly on available locations
-        if(spawned!=null){
-            int random = new Random().nextInt((locationSize - 0) + 1) + 0;
-            addToLocation = enemyLocations.get(random);
-            if(addToLocation.hasEnemy() == false){
-                //we add enemy to this location
-                addToLocation.setEnemy(spawned);
+            //set enemy randomly on available locations
+            if(spawned!=null){
+                int random = new Random().nextInt((locationSize - 0) + 1) + 0;
+                addToLocation = enemyLocations.get(random);
+                if(addToLocation.hasEnemy() == false){
+                    //we add enemy to this location
+                    addToLocation.setEnemy(spawned);
+                }
             }
         }
 

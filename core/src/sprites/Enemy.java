@@ -62,8 +62,8 @@ public class Enemy {
             this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
         }
 
-        Gdx.app.log("_test: (deltaTime)", String.valueOf(dt));
-        Gdx.app.log("_test: (stateTime)", String.valueOf(stateTime));
+        //Gdx.app.log("_test: (deltaTime)", String.valueOf(dt));
+        //Gdx.app.log("_test: (stateTime)", String.valueOf(stateTime));
 
         return 0;
     }
@@ -74,7 +74,7 @@ public class Enemy {
         // accuracy at 50%
         int random = new Random().nextInt((1-0) + 1)+0;
 
-        Gdx.app.log("_fire: ", String.valueOf(random));
+        //Gdx.app.log("_fire: ", String.valueOf(random));
 
         return random;
     }
