@@ -269,7 +269,7 @@ public class GameScreen implements Screen {
 
 
     private void spawnEnemy(float dt){
-        Gdx.app.log("test",String.valueOf(dt));
+        
         this.updateAvailableLocations();
         //we only spawn if locations are not full
         if(EnemyLocation.occupiedLocations < enemyLocations.size){
