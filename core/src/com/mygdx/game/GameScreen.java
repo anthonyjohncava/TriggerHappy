@@ -230,7 +230,6 @@ public class GameScreen implements Screen {
 
         if (state == "Game Over") {
             stage.draw();
-
         }
 
     }
@@ -260,15 +259,9 @@ public class GameScreen implements Screen {
                 if(spawned!=null){
                     int random = new Random().nextInt((availableIndex - 0) + 1) + 0;
                     addToLocation = enemyLocations.get(this.available.get(random));
-                    if(addToLocation.hasEnemy() == false){
-                        //we add enemy to this location
-                        addToLocation.setEnemy(spawned);
-                    }
+                    addToLocation.setEnemy(spawned);
                 }
             }
-            Gdx.app.log("Not Full",String.valueOf(EnemyLocation.occupiedLocations));
-        }else{
-            Gdx.app.log("Full",String.valueOf(EnemyLocation.occupiedLocations));
         }
 
     }
