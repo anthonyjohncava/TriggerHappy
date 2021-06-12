@@ -100,7 +100,10 @@ public class GameScreen implements Screen {
         for(Enemy enemy: enemies){
             if(enemy.isAlive()){
                 batch.draw(enemy.getEnemy(),enemy.getPosition().x,enemy.getPosition().y);
-                lives -= enemy.update(Gdx.graphics.getDeltaTime());
+
+                if (enemy.update(Gdx.graphics.getDeltaTime()) == 1) {
+                    lives -= 1;
+                }
             }
         }
 
