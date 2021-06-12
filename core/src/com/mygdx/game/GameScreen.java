@@ -52,14 +52,16 @@ public class GameScreen implements Screen {
 
     private Texture gunTrigger;
     private Sound shootSound;
+    private Sound gameOverSound;
 
     private Texture bloodshot;
+    private Texture gameOverText;
 
     private Array<Enemy> enemies;
     private Array<EnemyLocation> enemyLocations;
 
 
-    private ArrayList<Integer> exclude;
+    private ArrayList<Integer> available;
     Timer timer = new Timer();
 
     String state = "ok";
@@ -74,7 +76,11 @@ public class GameScreen implements Screen {
 
     public void create() {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
+
         batch = new SpriteBatch();
+
+        this.available = new ArrayList<Integer>();
 
         //prepare locations
         enemyLocations = new Array<EnemyLocation>();
@@ -84,6 +90,7 @@ public class GameScreen implements Screen {
         //enemyLocations.add(new EnemyLocation(625,90));
         //enemyLocations.add(new EnemyLocation(225,200));
         //enemyLocations.add(new EnemyLocation(225,400));
+
 
         //prepare enemies
         enemies = new Array<Enemy>();
@@ -101,6 +108,7 @@ public class GameScreen implements Screen {
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
         lives = 3;
 
+        gameOverText = new Texture(Gdx.files.internal("gameover.png"));
         bloodshot = new Texture(Gdx.files.internal("bloodstain.png"));
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
 
@@ -108,7 +116,7 @@ public class GameScreen implements Screen {
 
     public void render(float f) {
         //Clear screen
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
@@ -119,63 +127,73 @@ public class GameScreen implements Screen {
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
 
-        //spawn enemy logic
-        this.spawnEnemy(stateTime);
 
         batch.begin();
 
+        if (state != "Game Over") {
+            //Spawn enemies on every available location
+            this.spawnEnemy(stateTime);
+            this.updateAvailableLocations();
 
-        //display enemy on locations
-        for(EnemyLocation loc: enemyLocations) {
-            Enemy e = loc.getEnemy();
-            if (e != null && e.isAlive()) {
-                batch.draw(e.getEnemy(), loc.getX(), loc.getY());
+            //display enemy on locations
+            for(EnemyLocation loc: enemyLocations) {
+                Enemy e = loc.getEnemy();
+                if (e != null && e.isAlive()) {
+                    batch.draw(e.getEnemy(), loc.getX(), loc.getY());
 
-                if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
-                    lives -= 1;
-                    state = "damaged";
+                    if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
+                        lives -= 1;
+                        state = "damaged";
+                    }
+
+
                 }
+            }
+
+            if (Gdx.input.isTouched()) {
+                Vector3 touchPos = new Vector3();
+                touchPos.set(Gdx.input.getX(), 480 - Gdx.input.getY(), 0);
+                batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
+                shootSound.play();
+
+                for(EnemyLocation l: enemyLocations) {
+                    l.checkCollision(touchPos);
+                }
+            }
+
+            // if player is damaged
+            if (timeStart + 5 == (int)stateTime) {
+                timeStart = (int)stateTime;
+                state = "ok";
+            }
+            if (state == "damaged") {
+                batch.draw(bloodshot, -100, -160, 1000, 800);
+            }
+
+
+            if (lives == 3) {
+                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
+                batch.draw(lifeImage, 690, 400, heart_width, heart_height);
+                batch.draw(lifeImage, 740, 400, heart_width, heart_height);
+            }
+
+            if (lives == 2) {
+                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
+                batch.draw(lifeImage, 690, 400, heart_width, heart_height);
+            }
+
+            if (lives == 1) {
+                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
+            }
+
+            if (lives < 1) {
+                state = "Game Over";
+                gameOverSound.setVolume(gameOverSound.play(), 200);
+                gameOverSound.play();
 
             }
-        }
-
-
-
-        if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), 480 - Gdx.input.getY(), 0);
-            batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
-            shootSound.play();
-
-            for(EnemyLocation l: enemyLocations) {
-                l.checkCollision(touchPos);
-            }
-        }
-
-
-        // if player is damaged
-        if (timeStart + 5 == (int)stateTime) {
-            timeStart = (int)stateTime;
-            state = "ok";
-        }
-        if (state == "damaged") {
-            batch.draw(bloodshot, -100, -160, 1000, 800);
-        }
-
-
-        if (lives == 3) {
-            batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-            batch.draw(lifeImage, 690, 400, heart_width, heart_height);
-            batch.draw(lifeImage, 740, 400, heart_width, heart_height);
-        }
-
-        if (lives == 2) {
-            batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-            batch.draw(lifeImage, 690, 400, heart_width, heart_height);
-        }
-
-        if (lives == 1) {
-            batch.draw(lifeImage, 640, 400, heart_width, heart_height);
+        } else {
+            batch.draw(gameOverText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         }
 
         batch.end();
@@ -191,30 +209,42 @@ public class GameScreen implements Screen {
 
     private void spawnEnemy(float dt){
 
-        Gdx.app.log("statetime",String.valueOf(dt));
-        Gdx.app.log("deltatime",String.valueOf(Gdx.graphics.getDeltaTime()));
+        //we only spawn if locations are not full
+        if(EnemyLocation.occupiedLocations < enemyLocations.size){
+            //logic for spawning enemy every 3 seconds
+            if (spawnTimer + 3 == (int)dt) {
+                spawnTimer = (int)dt;
+                Enemy spawned = null;
+                EnemyLocation addToLocation;
+                //create enemy
+                spawned = new Enemy();
+                enemies.add(spawned);
+                int availableIndex = this.available.size() - 1;
 
-        //logic for spawning enemy every 3 seconds
-        if (spawnTimer + 3 == (int)dt) {
-            spawnTimer = (int)dt;
-            Enemy spawned = null;
-            locationSize = enemyLocations.size - 1;
-            EnemyLocation addToLocation;
-            //create enemy
-            spawned = new Enemy();
-            enemies.add(spawned);
-
-            //set enemy randomly on available locations
-            if(spawned!=null){
-                int random = new Random().nextInt((locationSize - 0) + 1) + 0;
-                addToLocation = enemyLocations.get(random);
-                if(addToLocation.hasEnemy() == false){
-                    //we add enemy to this location
-                    addToLocation.setEnemy(spawned);
+                //set enemy randomly on available locations
+                if(spawned!=null){
+                    int random = new Random().nextInt((availableIndex - 0) + 1) + 0;
+                    addToLocation = enemyLocations.get(this.available.get(random));
+                    if(addToLocation.hasEnemy() == false){
+                        //we add enemy to this location
+                        addToLocation.setEnemy(spawned);
+                    }
                 }
             }
+            Gdx.app.log("Not Full",String.valueOf(EnemyLocation.occupiedLocations));
+        }else{
+            Gdx.app.log("Full",String.valueOf(EnemyLocation.occupiedLocations));
         }
 
+    }
+
+    private void updateAvailableLocations(){
+        this.available.clear();
+        for(int x=0;x<enemyLocations.size;x++) {
+            if(enemyLocations.get(x).hasEnemy() == false){
+                this.available.add(x);
+            }
+        }
     }
 
 
