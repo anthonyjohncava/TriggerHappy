@@ -75,6 +75,8 @@ public class GameScreen implements Screen {
     int timeStart = 0;
     int spawnTimer = 0;
 
+    private TextButton button;
+    private TextButton exitBtn;
 
     // constructor to keep a reference to the main Game class
     public GameScreen(MyGdxGame game) {
@@ -129,10 +131,26 @@ public class GameScreen implements Screen {
         // Game over buttons
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         stage = new Stage();
-        final TextButton exitBtn = new TextButton("EXIT", skin);
+
+        button = new TextButton("RETRY", skin);
+        button.setWidth(300f);
+        button.setHeight(100f);
+        button.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 0f);
+
+
+        exitBtn = new TextButton("EXIT", skin);
         exitBtn.setWidth(300f);
         exitBtn.setHeight(100f);
         exitBtn.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 120f);
+
+        button.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked (InputEvent event, float x, float y)
+            {
+                game.setScreen(MyGdxGame.menuScreen);
+            }
+        });
 
         exitBtn.addListener(new ClickListener()
         {
@@ -143,9 +161,8 @@ public class GameScreen implements Screen {
             }
         });
 
-        stage.addActor(exitBtn);
-        Gdx.input.setInputProcessor(stage);
 
+        Gdx.input.setInputProcessor(stage);
     }
 
     public void render(float f) {
@@ -165,6 +182,7 @@ public class GameScreen implements Screen {
         batch.begin();
 
         if (state != "Game Over") {
+
             //Spawn enemies on every available location
             this.spawnEnemy(stateTime);
 
@@ -233,6 +251,8 @@ public class GameScreen implements Screen {
         batch.end();
 
         if (state == "Game Over") {
+            stage.addActor(button);
+            stage.addActor(exitBtn);
             stage.draw();
         }
 
