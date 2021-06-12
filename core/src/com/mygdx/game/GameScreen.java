@@ -93,13 +93,17 @@ public class GameScreen implements Screen {
 
         //prepare locations
         enemyLocations = new Array<EnemyLocation>();
-        enemyLocations.add(new EnemyLocation(93,90));
-        enemyLocations.add(new EnemyLocation(225,90));
-        enemyLocations.add(new EnemyLocation(425,90));
-        //enemyLocations.add(new EnemyLocation(625,90));
-        //enemyLocations.add(new EnemyLocation(225,200));
+        //enemyLocations.add(new EnemyLocation(93,90));
+        //enemyLocations.add(new EnemyLocation(225,90));
+        //enemyLocations.add(new EnemyLocation(488,90));
+        //enemyLocations.add(new EnemyLocation(718,90));
+        //enemyLocations.add(new EnemyLocation(718,186));
+        //enemyLocations.add(new EnemyLocation(488,186));
+        enemyLocations.add(new EnemyLocation(225,206));
+        //enemyLocations.add(new EnemyLocation(225,800));
         //enemyLocations.add(new EnemyLocation(225,400));
-
+        //enemyLocations.add(new EnemyLocation(225,400));
+        this.updateAvailableLocations();
 
         //prepare enemies
         enemies = new Array<Enemy>();
@@ -163,7 +167,7 @@ public class GameScreen implements Screen {
         if (state != "Game Over") {
             //Spawn enemies on every available location
             this.spawnEnemy(stateTime);
-            this.updateAvailableLocations();
+
 
             //display enemy on locations
             for(EnemyLocation loc: enemyLocations) {
@@ -242,7 +246,7 @@ public class GameScreen implements Screen {
 
 
     private void spawnEnemy(float dt){
-
+        this.updateAvailableLocations();
         //we only spawn if locations are not full
         if(EnemyLocation.occupiedLocations < enemyLocations.size){
             //logic for spawning enemy every 3 seconds
@@ -253,7 +257,11 @@ public class GameScreen implements Screen {
                 //create enemy
                 spawned = new Enemy();
                 enemies.add(spawned);
-                int availableIndex = this.available.size() - 1;
+                int availableIndex = 0;
+
+                if(this.available.size() > 0){
+                    availableIndex = this.available.size() - 1;
+                }
 
                 //set enemy randomly on available locations
                 if(spawned!=null){
@@ -263,6 +271,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
+
 
     }
 
