@@ -1,6 +1,7 @@
 package sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
@@ -24,13 +25,14 @@ public class Enemy {
 
     private int timeStart = 0;
     private float stateTime;
-
+    private Sound enemyFireSound;
     public Enemy(){
         this.currentState = EnemyState.IDLE;
         this.isAlive = true;
         this.accuracy = 100; //100 accuracy will always hit
         this.texture = new Texture("enemy_sprite.png");
         this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
+        enemyFireSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
     }
 
 
@@ -61,6 +63,7 @@ public class Enemy {
     }
 
     public int fire(){
+        enemyFireSound.play();
         this.textureRegion = new TextureRegion(texture,24,0,this.width,this.height);
         // accuracy at 50%
         int random = new Random().nextInt((1-0) + 1)+0;

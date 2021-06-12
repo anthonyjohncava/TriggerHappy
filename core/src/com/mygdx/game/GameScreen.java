@@ -103,7 +103,6 @@ public class GameScreen implements Screen {
         stateTime += Gdx.graphics.getDeltaTime();
 
 
-
         batch.begin();
 
 
@@ -130,6 +129,7 @@ public class GameScreen implements Screen {
                 lives -= e.update(Gdx.graphics.getDeltaTime());
             }
         }
+
 
 
         if (Gdx.input.isTouched()) {

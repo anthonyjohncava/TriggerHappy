@@ -42,12 +42,15 @@ public class EnemyLocation {
     }
 
     public void checkCollision(Vector3 mouseClick) {
-        if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.enemyContained.getWidth()) {
-            if (mouseClick.y >= this.position.y && mouseClick.y <= this.position.y + this.enemyContained.getHeight()) {
-                //kill the enemy and empty the location
-                this.enemyContained.hit();
-                this.enemyContained = null;
-                this.isOccupied = false;
+        //we only check if there is an enemy contained
+        if(this.enemyContained != null){
+            if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.enemyContained.getWidth()) {
+                if (mouseClick.y >= this.position.y && mouseClick.y <= this.position.y + this.enemyContained.getHeight()) {
+                    //kill the enemy and empty the location
+                    this.enemyContained.hit();
+                    this.enemyContained = null;
+                    this.isOccupied = false;
+                }
             }
         }
     }
