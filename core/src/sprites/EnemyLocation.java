@@ -12,6 +12,10 @@ public class EnemyLocation {
         this.position = new Vector3(x,y,0);
     }
 
+    public static void resetOccupied(){
+        occupiedLocations = 0;
+    }
+
     public boolean setEnemy(Enemy e){
         if(e == null){
             this.isOccupied = false;

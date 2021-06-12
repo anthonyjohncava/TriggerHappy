@@ -148,8 +148,10 @@ public class GameScreen implements Screen {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
-//                game.setScreen(MyGdxGame.gameScreen);
-                create();
+                EnemyLocation.resetOccupied();
+                stateTime = 0;
+                game.setScreen(MyGdxGame.gameScreen);
+                //create();
             }
         });
 
@@ -267,10 +269,11 @@ public class GameScreen implements Screen {
 
 
     private void spawnEnemy(float dt){
+        Gdx.app.log("test",String.valueOf(dt));
         this.updateAvailableLocations();
         //we only spawn if locations are not full
         if(EnemyLocation.occupiedLocations < enemyLocations.size){
-            //logic for spawning enemy every 3 seconds
+            //logic for spawning enemy every x seconds
             if (spawnTimer + 1 == (int)dt) {
                 spawnTimer = (int)dt;
                 Enemy spawned = null;
