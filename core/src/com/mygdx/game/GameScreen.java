@@ -50,8 +50,13 @@ public class GameScreen implements Screen {
     private Texture gunTrigger;
     private Sound shootSound;
 
+    private Texture bloodshot;
+
     private Array<Enemy> enemies;
     private Array<EnemyLocation> enemyLocations;
+
+    String state = "ok";
+    int timeStart = 0;
 
 
     // constructor to keep a reference to the main Game class
@@ -85,6 +90,7 @@ public class GameScreen implements Screen {
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
         lives = 3;
 
+        bloodshot = new Texture(Gdx.files.internal("bloodstain.png"));
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
 
     }
@@ -126,7 +132,13 @@ public class GameScreen implements Screen {
             Enemy e = loc.getEnemy();
             if (e != null && e.isAlive()) {
                 batch.draw(e.getEnemy(), loc.getX(), loc.getY());
-                lives -= e.update(Gdx.graphics.getDeltaTime());
+
+                if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
+                    lives -= 1;
+                    // Show damage on screen
+                    state = "damaged";
+                }
+
             }
         }
 
@@ -141,6 +153,17 @@ public class GameScreen implements Screen {
             for(EnemyLocation l: enemyLocations) {
                 l.checkCollision(touchPos);
             }
+        }
+
+
+        // if player is damaged
+        if (timeStart + 3 == (int)stateTime) {
+            timeStart = (int)stateTime;
+            state = "ok";
+
+        }
+        if (state == "damaged") {
+            batch.draw(bloodshot, -100, -160, 1000, 800);
         }
 
 
@@ -162,6 +185,7 @@ public class GameScreen implements Screen {
         batch.end();
 
     }
+
 
 
     private void loadMusic() {

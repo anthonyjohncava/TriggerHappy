@@ -49,7 +49,7 @@ public class Enemy {
 
         stateTime += dt;
 
-        if (timeStart + 5 == (int)stateTime) {
+        if (timeStart + 3 == (int)stateTime) {
             timeStart = (int)stateTime;
             return fire();
         } else {
