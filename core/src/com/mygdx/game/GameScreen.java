@@ -21,7 +21,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
+
+import java.util.Random;
+
 import sprites.Enemy;
+import sprites.EnemyLocation;
 
 public class GameScreen implements Screen {
     MyGdxGame game;
@@ -33,23 +37,21 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;                      // Camera to show a specific portion of the world to the player.
 
 
-    // Variables for the character running animation.
-    Animation runAnimation;		                            // Stores the array containing all of runFrames. It will also have the defined duration (in seconds) for each frame.
-    TextureRegion currentFrame;                             // Current frame to display.
     float stateTime;                                        // The time the program has been running.
+    int spawnCounter = 0; //time counter for spawn
 
     // Heart variables
     private Texture lifeImage;
     private int lives;
     private static int heart_height = 90;
     private static int heart_width = 75;
-
+    private int locationSize = 0;
 
     private Texture gunTrigger;
     private Sound shootSound;
 
     private Array<Enemy> enemies;
-
+    private Array<EnemyLocation> enemyLocations;
 
 
     // constructor to keep a reference to the main Game class
@@ -61,8 +63,14 @@ public class GameScreen implements Screen {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         batch = new SpriteBatch();
 
+        //prepare locations
+        enemyLocations = new Array<EnemyLocation>();
+        enemyLocations.add(new EnemyLocation(93,90));
+        enemyLocations.add(new EnemyLocation(225,90));
+
+
+        //prepare enemies
         enemies = new Array<Enemy>();
-        this.spawnEnemy();
 
         // Loads the tiledMap. ---------------------------------------------------------------------
         tiledMap = new TmxMapLoader().load("testMap.tmx");
@@ -94,16 +102,30 @@ public class GameScreen implements Screen {
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
 
-        batch.begin();
-        //Draw enemies
 
-        for(Enemy enemy: enemies){
-            if(enemy.isAlive()){
-                batch.draw(enemy.getEnemy(),enemy.getPosition().x,enemy.getPosition().y);
-                //trigger firing after 10 statetime
-                if(stateTime > 10){
-                    enemy.fire();
-                }
+
+        batch.begin();
+
+        //Draw enemies on every location
+        Enemy createdEnemy = this.spawnEnemy(stateTime);
+
+        //set enemy randomly on existing locations
+        locationSize = enemyLocations.size - 1;
+        EnemyLocation addToLocation;
+        int random = new Random().nextInt((locationSize - 0) + 1) + 0;
+        addToLocation = enemyLocations.get(random);
+
+        //add enemy on a location without enemy
+        if(addToLocation.hasEnemy() == false){
+            //we add if there is no enemy yet
+            addToLocation.setEnemy(createdEnemy);
+        }
+
+        //display enemy on locations
+        for(EnemyLocation loc: enemyLocations){
+            Enemy e = loc.getEnemy();
+            if(e != null && e.isAlive()){
+                batch.draw(e.getEnemy(),loc.getX(),loc.getY());
             }
         }
 
@@ -114,9 +136,8 @@ public class GameScreen implements Screen {
             batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
             shootSound.play();
 
-            for(Enemy enemy: enemies){
-                enemy.checkCollision(touchPos);
-            }
+
+
 
         }
 
@@ -136,7 +157,6 @@ public class GameScreen implements Screen {
             batch.draw(lifeImage, 640, 400, heart_width, heart_height);
         }
 
-
         batch.end();
 
     }
@@ -146,11 +166,19 @@ public class GameScreen implements Screen {
 
     }
 
-    private void spawnEnemy(){
-        //225,90
-        //enemy1 = new Enemy(93, 90 );
-        enemies.add(new Enemy());
+    private Enemy spawnEnemy(float dt){
+        //logic for spawning enemy
+        Enemy spawned = null;
+
+        if(spawnCounter + 5 == (int)dt){
+            spawnCounter += (int)dt;
+            spawned = new Enemy();
+            enemies.add(spawned);
+        }
+
+        return spawned;
     }
+
 
     @Override
     public void dispose() { }

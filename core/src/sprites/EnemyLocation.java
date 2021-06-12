@@ -5,10 +5,28 @@ import com.badlogic.gdx.math.Vector3;
 public class EnemyLocation {
     private boolean isOccupied = false;
     private Vector3 position;
-    private Enemy enemyContained;
+    private Enemy enemyContained = null;
 
-    public EnemyLocation(Enemy e){
-        this.enemyContained = new Enemy();
+    public EnemyLocation(float x,float y){
+        this.position = new Vector3(x,y,0);
+    }
+
+    public boolean setEnemy(Enemy e){
+        if(e == null){
+            this.isOccupied = false;
+            return false;
+        }
+        this.enemyContained = e;
+        this.isOccupied = true;
+        return true;
+    }
+
+    public Enemy getEnemy(){
+        return this.enemyContained;
+    }
+
+    public boolean hasEnemy(){
+        return this.isOccupied;
     }
 
     public float getX(){

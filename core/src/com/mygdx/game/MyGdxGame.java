@@ -26,6 +26,7 @@ public class MyGdxGame extends Game implements ApplicationListener {
 	public static final int HEIGHT = 480;
 
 
+
 	@Override
 	public void create () {
 		gameScreen = new GameScreen(this);
