@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.Random;
+
 public class Enemy {
     //Sprites
     private Texture texture;
@@ -15,12 +17,13 @@ public class Enemy {
     //Enemy Status
     private boolean isAlive;
     private int accuracy; //rate to hit the player
-    private Vector3 position;
 
     //Enemy States
     public enum EnemyState { IDLE,FIRING }
     public EnemyState currentState;
 
+    private int timeStart = 0;
+    private float stateTime;
 
     public Enemy(){
         this.currentState = EnemyState.IDLE;
@@ -28,7 +31,6 @@ public class Enemy {
         this.accuracy = 100; //100 accuracy will always hit
         this.texture = new Texture("enemy_sprite.png");
         this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
-        this.position = new Vector3(93,90,0);
     }
 
 
@@ -40,25 +42,32 @@ public class Enemy {
         return isAlive;
     }
 
-    public void checkCollision(Vector3 mouseClick) {
-        if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.width) {
-            if (mouseClick.y >= this.position.y && mouseClick.y <= this.position.y + this.height) {
-                this.hit();
-            }
+
+    public int update(float dt){
+
+        stateTime += dt;
+
+        if (timeStart + 5 == (int)stateTime) {
+            timeStart = (int)stateTime;
+            return fire();
+        } else {
+            this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
         }
+
+        Gdx.app.log("_test: (deltaTime)", String.valueOf(dt));
+        Gdx.app.log("_test: (stateTime)", String.valueOf(stateTime));
+
+        return 0;
     }
 
-
-    public Vector3 getPosition() {
-        return position;
-    }
-
-    public void update(float dt){
-
-    }
-
-    public void fire(){
+    public int fire(){
         this.textureRegion = new TextureRegion(texture,24,0,this.width,this.height);
+        // accuracy at 50%
+        int random = new Random().nextInt((1-0) + 1)+0;
+
+        Gdx.app.log("_fire: ", String.valueOf(random));
+
+        return random;
     }
 
     public void idle(){
@@ -67,6 +76,14 @@ public class Enemy {
 
     public TextureRegion getEnemy() {
         return this.textureRegion;
+    }
+
+    public int getWidth(){
+        return this.width;
+    }
+
+    public int getHeight(){
+        return this.height;
     }
 
 }

@@ -106,6 +106,7 @@ public class GameScreen implements Screen {
 
         batch.begin();
 
+
         //Draw enemies on every location
         Enemy createdEnemy = this.spawnEnemy(stateTime);
 
@@ -122,10 +123,11 @@ public class GameScreen implements Screen {
         }
 
         //display enemy on locations
-        for(EnemyLocation loc: enemyLocations){
+        for(EnemyLocation loc: enemyLocations) {
             Enemy e = loc.getEnemy();
-            if(e != null && e.isAlive()){
-                batch.draw(e.getEnemy(),loc.getX(),loc.getY());
+            if (e != null && e.isAlive()) {
+                batch.draw(e.getEnemy(), loc.getX(), loc.getY());
+                lives -= e.update(Gdx.graphics.getDeltaTime());
             }
         }
 
@@ -136,9 +138,9 @@ public class GameScreen implements Screen {
             batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
             shootSound.play();
 
-
-
-
+            for(EnemyLocation l: enemyLocations) {
+                l.checkCollision(touchPos);
+            }
         }
 
 
