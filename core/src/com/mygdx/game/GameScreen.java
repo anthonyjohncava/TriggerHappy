@@ -29,8 +29,6 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import sprites.Enemy;
 import sprites.EnemyLocation;
@@ -46,14 +44,13 @@ public class GameScreen implements Screen {
 
 
     float stateTime;                                        // The time the program has been running.
-    int spawnCounter = 0; //time counter for spawn
+
 
     // Heart variables
     private Texture lifeImage;
     private int lives;
     private static int heart_height = 90;
     private static int heart_width = 75;
-    private int locationSize = 0;
 
     private Texture gunTrigger;
     private Sound shootSound;
@@ -69,7 +66,7 @@ public class GameScreen implements Screen {
 
 
     private ArrayList<Integer> available;
-    Timer timer = new Timer();
+
 
     String state = "ok";
     int timeStart = 0;
@@ -95,16 +92,16 @@ public class GameScreen implements Screen {
 
         //prepare locations
         enemyLocations = new Array<EnemyLocation>();
-        //enemyLocations.add(new EnemyLocation(93,90));
-        //enemyLocations.add(new EnemyLocation(225,90));
-        //enemyLocations.add(new EnemyLocation(488,90));
-        //enemyLocations.add(new EnemyLocation(718,90));
-        //enemyLocations.add(new EnemyLocation(718,186));
-        //enemyLocations.add(new EnemyLocation(488,186));
-        enemyLocations.add(new EnemyLocation(225,206));
-        //enemyLocations.add(new EnemyLocation(225,800));
-        //enemyLocations.add(new EnemyLocation(225,400));
-        //enemyLocations.add(new EnemyLocation(225,400));
+        enemyLocations.add(new EnemyLocation(93,90));
+        enemyLocations.add(new EnemyLocation(225,90));
+        enemyLocations.add(new EnemyLocation(488,90));
+        enemyLocations.add(new EnemyLocation(718,90));
+        enemyLocations.add(new EnemyLocation(718,186));
+        enemyLocations.add(new EnemyLocation(488,186));
+        enemyLocations.add(new EnemyLocation(225,218));
+        enemyLocations.add(new EnemyLocation(93,218));
+        enemyLocations.add(new EnemyLocation(225,315));
+        enemyLocations.add(new EnemyLocation(93,315));
         this.updateAvailableLocations();
 
         //prepare enemies
@@ -270,7 +267,7 @@ public class GameScreen implements Screen {
         //we only spawn if locations are not full
         if(EnemyLocation.occupiedLocations < enemyLocations.size){
             //logic for spawning enemy every 3 seconds
-            if (spawnTimer + 3 == (int)dt) {
+            if (spawnTimer + 1 == (int)dt) {
                 spawnTimer = (int)dt;
                 Enemy spawned = null;
                 EnemyLocation addToLocation;
