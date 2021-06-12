@@ -52,6 +52,7 @@ public class GameScreen implements Screen {
     private Sound shootSound;
 
     private Texture bloodshot;
+    private Texture gameOverText;
 
     private Array<Enemy> enemies;
     private Array<EnemyLocation> enemyLocations;
@@ -97,6 +98,7 @@ public class GameScreen implements Screen {
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
         lives = 3;
 
+        gameOverText = new Texture(Gdx.files.internal("gameover.png"));
         bloodshot = new Texture(Gdx.files.internal("bloodstain.png"));
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
 
@@ -115,67 +117,70 @@ public class GameScreen implements Screen {
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
 
-
         batch.begin();
 
+        if (state != "Game Over") {
+            //Spawn enemies on every available location
+            this.spawnEnemy(stateTime);
 
-        //Spawn enemies on every available location
-        this.spawnEnemy(stateTime);
+            //display enemy on locations
+            for(EnemyLocation loc: enemyLocations) {
+                Enemy e = loc.getEnemy();
+                if (e != null && e.isAlive()) {
+                    batch.draw(e.getEnemy(), loc.getX(), loc.getY());
 
+                    if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
+                        lives -= 1;
+                        state = "damaged";
+                    }
 
-        //display enemy on locations
-        for(EnemyLocation loc: enemyLocations) {
-            Enemy e = loc.getEnemy();
-            if (e != null && e.isAlive()) {
-                batch.draw(e.getEnemy(), loc.getX(), loc.getY());
-
-                if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
-                    lives -= 1;
-                    state = "damaged";
                 }
+            }
+
+            if (Gdx.input.isTouched()) {
+                Vector3 touchPos = new Vector3();
+                touchPos.set(Gdx.input.getX(), 480 - Gdx.input.getY(), 0);
+                batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
+                shootSound.play();
+
+                for(EnemyLocation l: enemyLocations) {
+                    l.checkCollision(touchPos);
+                }
+            }
+
+            // if player is damaged
+            if (timeStart + 5 == (int)stateTime) {
+                timeStart = (int)stateTime;
+                state = "ok";
+            }
+            if (state == "damaged") {
+                batch.draw(bloodshot, -100, -160, 1000, 800);
+            }
+
+
+            if (lives == 3) {
+                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
+                batch.draw(lifeImage, 690, 400, heart_width, heart_height);
+                batch.draw(lifeImage, 740, 400, heart_width, heart_height);
+            }
+
+            if (lives == 2) {
+                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
+                batch.draw(lifeImage, 690, 400, heart_width, heart_height);
+            }
+
+            if (lives == 1) {
+                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
+            }
+
+            if (lives == 0) {
+                state = "Game Over";
 
             }
+        } else {
+            batch.draw(gameOverText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         }
-
-
-
-        if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), 480 - Gdx.input.getY(), 0);
-            batch.draw(gunTrigger, touchPos.x - 30, touchPos.y - 30, 60, 60);
-            shootSound.play();
-
-            for(EnemyLocation l: enemyLocations) {
-                l.checkCollision(touchPos);
-            }
-        }
-
-
-        // if player is damaged
-        if (timeStart + 5 == (int)stateTime) {
-            timeStart = (int)stateTime;
-            state = "ok";
-        }
-        if (state == "damaged") {
-            batch.draw(bloodshot, -100, -160, 1000, 800);
-        }
-
-
-        if (lives == 3) {
-            batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-            batch.draw(lifeImage, 690, 400, heart_width, heart_height);
-            batch.draw(lifeImage, 740, 400, heart_width, heart_height);
-        }
-
-        if (lives == 2) {
-            batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-            batch.draw(lifeImage, 690, 400, heart_width, heart_height);
-        }
-
-        if (lives == 1) {
-            batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-        }
-
+        
         batch.end();
 
     }
