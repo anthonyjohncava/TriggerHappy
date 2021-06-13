@@ -34,6 +34,10 @@ import sprites.Enemy;
 import sprites.EnemyLocation;
 import sprites.Heart;
 
+/**
+ * Game screen
+ * The screen where the game is actually running
+ */
 public class GameScreen implements Screen {
     MyGdxGame game;
     SpriteBatch batch;
@@ -42,38 +46,33 @@ public class GameScreen implements Screen {
     private TiledMap tiledMap;                              // Loads the tiledMap.
     private OrthogonalTiledMapRenderer tiledMapRenderer;    // Renders the tiledMap.
     private OrthographicCamera camera;                      // Camera to show a specific portion of the world to the player.
-
-
     float stateTime;                                        // The time the program has been running.
 
-    private Music backgroundMusic;                          // Background music while playing the game.
-
-    // Heart variables
+    //Textures
     private Texture lifeImage;
-    private int lives;
-    private static int heart_height = 90;
-    private static int heart_width = 75;
-
     private Texture gunTrigger;
-    private Sound shootSound;
-    private Sound winSound;
-    private Sound gameOverSound;
-
     private Texture bloodshot;
     private Texture gameOverText;
     private Texture congratsText;
+
+    //Sound variables
+    private Sound shootSound;
+    private Sound winSound;
+    private Sound gameOverSound;
+    private Music backgroundMusic;                          // Background music while playing the game.
+
     private Skin skin;
     private Stage stage;
 
+    //Game variables
     private Array<EnemyLocation> enemyLocations;
-
-
     private ArrayList<Integer> available;
-
-
     String state;
-    int timeStart;
-    int spawnTimer;
+    private int timeStart;
+    private int spawnTimer;
+    private int lives;
+    private static int heart_height = 90;
+    private static int heart_width = 75;
     private int heartSpawnCount;
     private int targeted;
     private boolean heartHit;
@@ -81,6 +80,7 @@ public class GameScreen implements Screen {
     private int kills;
     private int killLimit;
 
+    //Buttons
     private TextButton button;
     private TextButton exitBtn;
 
@@ -90,23 +90,25 @@ public class GameScreen implements Screen {
     }
 
     public void create() {
-        loadMusic();
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
-        winSound = Gdx.audio.newSound(Gdx.files.internal("win.mp3"));
-        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
+        //initialize game variables
         this.heartSpawnCount = 0;
         this.killLimit = 30;
         this.kills = 0;
         this.heartHit = false;
         this.targeted = -1;
-        state = "ok";
-        timeStart = 0;
-        spawnTimer = 0;
-
-        batch = new SpriteBatch();
-
+        this.state = "ok";
+        this.timeStart = 0;
+        this.spawnTimer = 0;
+        this.batch = new SpriteBatch();
         this.available = new ArrayList<Integer>();
+        this.lives = 3; //we have 3 lives at the start, 3 is the max number of lives
+
+        //prepare music
+        loadMusic();
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
+        winSound = Gdx.audio.newSound(Gdx.files.internal("win.mp3"));
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
         //prepare locations
         enemyLocations = new Array<EnemyLocation>();
@@ -132,10 +134,8 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth()*3-700, Gdx.graphics.getHeight()*3-400);
         camera.position.set(Gdx.graphics.getWidth()+70, Gdx.graphics.getHeight()+70,0);
 
-        // Heart
+        //Prepare textures
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
-        lives = 3;
-
         gameOverText = new Texture(Gdx.files.internal("gameover.png"));
         congratsText = new Texture(Gdx.files.internal("congrats.png"));
         bloodshot = new Texture(Gdx.files.internal("bloodstain.png"));
@@ -178,7 +178,6 @@ public class GameScreen implements Screen {
             }
         });
 
-
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -195,9 +194,9 @@ public class GameScreen implements Screen {
         // Updates the stateTime using the deltaTime (to have the same time across all devices with different processors).
         stateTime += Gdx.graphics.getDeltaTime();
 
-
         batch.begin();
 
+        //Checking the game states
         if (state == "ok" || state == "damaged") {
 
             //Spawn enemies on every available location
@@ -259,14 +258,12 @@ public class GameScreen implements Screen {
             }
 
 
-
-            //draw lives
+            //draw heart depending on number of lives
             int heartX = 640;
             for(int z=1;z<=lives;z++){
                 batch.draw(lifeImage, heartX, 400, heart_width, heart_height);
                 heartX+=50;
             }
-
 
             if (lives < 1) {
                 state = "Game Over";
@@ -275,7 +272,7 @@ public class GameScreen implements Screen {
             }
 
 
-            //Game condition
+            //Game condition to win when kill limit reached
             if(kills >= killLimit){
                 //once we reach the kill limit, we win the game
                 state = "Congratulations";
@@ -304,17 +301,18 @@ public class GameScreen implements Screen {
 
     }
 
-
     private void loadMusic() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background_music.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
     }
 
-
-
+    /**
+     * Spawning Enemy or Heart on a location
+     * @param dt
+     */
     private void spawnEnemy(float dt){
-
+        //update locations where enemy or heart can spawn
         this.updateAvailableLocations();
         //we only spawn if locations are not full
         if(EnemyLocation.occupiedLocations < enemyLocations.size){
@@ -373,6 +371,9 @@ public class GameScreen implements Screen {
 
     }
 
+    /**
+     * Update the available locations where enemy or heart can spawn
+     */
     private void updateAvailableLocations(){
         this.available.clear();
         for(int x=0;x<enemyLocations.size;x++) {

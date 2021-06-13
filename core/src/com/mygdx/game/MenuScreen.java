@@ -13,6 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**
+ * Menu Screen of the game
+ */
 public class MenuScreen implements Screen{
     MyGdxGame game; // Note it’s "MyGdxGame" not "Game"
 
@@ -27,8 +30,6 @@ public class MenuScreen implements Screen{
         this.game = game;
     }
 
-
-
     public void create() {
         batch = new SpriteBatch();
         Gdx.app.log("MenuScreen: ","menuScreen create");
@@ -41,13 +42,11 @@ public class MenuScreen implements Screen{
         button.setWidth(300f);
         button.setHeight(100f);
         button.setPosition(Gdx.graphics.getWidth()/2 - 400f, Gdx.graphics.getHeight()/2 - 170f);
-//        button.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 0f);
 
 
         final TextButton exitBtn = new TextButton("EXIT", skin);
         exitBtn.setWidth(300f);
         exitBtn.setHeight(100f);
-//        exitBtn.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 120f);
         exitBtn.setPosition(Gdx.graphics.getWidth()/2 + 50f, Gdx.graphics.getHeight()/2 - 170f);
 
         button.addListener(new ClickListener()
@@ -83,7 +82,6 @@ public class MenuScreen implements Screen{
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         batch.begin();
         batch.draw(gameName, Gdx.graphics.getWidth() /2 - 400f, Gdx.graphics.getHeight()/2 - 50f, 700, 200);

@@ -2,6 +2,9 @@ package sprites;
 
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Locations on the building where enemy or heart can spawn
+ */
 public class EnemyLocation {
     private boolean isOccupied = false;
     private Vector3 position;
