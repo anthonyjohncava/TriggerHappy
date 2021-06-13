@@ -59,6 +59,7 @@ public class GameScreen implements Screen {
 
     private Texture bloodshot;
     private Texture gameOverText;
+    private Texture congratsText;
     private Skin skin;
     private Stage stage;
 
@@ -130,6 +131,7 @@ public class GameScreen implements Screen {
         lives = 3;
 
         gameOverText = new Texture(Gdx.files.internal("gameover.png"));
+        congratsText = new Texture(Gdx.files.internal("congrats.png"));
         bloodshot = new Texture(Gdx.files.internal("bloodstain.png"));
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
 
@@ -272,7 +274,7 @@ public class GameScreen implements Screen {
 
 
         }else if(state == "Congratulations"){
-
+            batch.draw(congratsText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         }else if(state == "Game Over") {
             batch.draw(gameOverText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         }
@@ -285,7 +287,9 @@ public class GameScreen implements Screen {
             stage.draw();
 
         }else if(state == "Congratulations"){
-
+            stage.addActor(button);
+            stage.addActor(exitBtn);
+            stage.draw();
         }
 
     }
