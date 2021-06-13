@@ -174,6 +174,7 @@ public class GameScreen implements Screen {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
+                EnemyLocation.resetOccupied();
                 Gdx.app.exit();
             }
         });
@@ -393,6 +394,8 @@ public class GameScreen implements Screen {
         gameOverSound.dispose();
         gameOverSound.dispose();
         lifeImage.dispose();
+        stage.dispose();
+        shootSound.dispose();
     }
 
     @Override

@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import sprites.EnemyLocation;
+
 /**
  * Menu Screen of the game
  */
@@ -64,6 +66,7 @@ public class MenuScreen implements Screen{
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
+                EnemyLocation.resetOccupied();
                 Gdx.app.exit();
             }
         });
