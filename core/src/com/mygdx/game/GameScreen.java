@@ -72,6 +72,7 @@ public class GameScreen implements Screen {
     int timeStart;
     int spawnTimer;
     private int targeted;
+    private boolean heartHit;
 
     private TextButton button;
     private TextButton exitBtn;
@@ -85,6 +86,7 @@ public class GameScreen implements Screen {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
+        this.heartHit = false;
         this.targeted = -1;
         state = "ok";
         timeStart = 0;
@@ -220,12 +222,9 @@ public class GameScreen implements Screen {
 
                 for(EnemyLocation l: enemyLocations) {
                     this.targeted = l.checkCollision(touchPos);
-                    if(this.targeted == 1){
-                        if(lives <= 5){
-                            lives += 1;
-                        }
-                    }
                 }
+
+
             }
 
             // if player is damaged
