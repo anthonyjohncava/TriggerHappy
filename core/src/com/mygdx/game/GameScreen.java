@@ -32,6 +32,7 @@ import java.util.Random;
 
 import sprites.Enemy;
 import sprites.EnemyLocation;
+import sprites.Heart;
 
 public class GameScreen implements Screen {
     MyGdxGame game;
@@ -61,7 +62,6 @@ public class GameScreen implements Screen {
     private Skin skin;
     private Stage stage;
 
-    private Array<Enemy> enemies;
     private Array<EnemyLocation> enemyLocations;
 
 
@@ -71,6 +71,7 @@ public class GameScreen implements Screen {
     String state;
     int timeStart;
     int spawnTimer;
+    private int targeted;
 
     private TextButton button;
     private TextButton exitBtn;
@@ -84,7 +85,7 @@ public class GameScreen implements Screen {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
-
+        this.targeted = -1;
         state = "ok";
         timeStart = 0;
         spawnTimer = 0;
@@ -107,8 +108,6 @@ public class GameScreen implements Screen {
         enemyLocations.add(new EnemyLocation(93,315));
         this.updateAvailableLocations();
 
-        //prepare enemies
-        enemies = new Array<Enemy>();
 
         // Loads the tiledMap. ---------------------------------------------------------------------
         tiledMap = new TmxMapLoader().load("testMap.tmx");
@@ -192,17 +191,25 @@ public class GameScreen implements Screen {
 
             //display enemy on locations
             for(EnemyLocation loc: enemyLocations) {
-                Enemy e = loc.getEnemy();
-                if (e != null && e.isAlive()) {
-                    batch.draw(e.getEnemy(), loc.getX(), loc.getY());
+                if(loc.getEnemy() != null){
+                    Enemy e = loc.getEnemy();
+                    if (e != null && e.isAlive()) {
+                        batch.draw(e.getEnemy(), loc.getX(), loc.getY());
 
-                    if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
-                        lives -= 1;
-                        state = "damaged";
+                        if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
+                            lives -= 1;
+                            state = "damaged";
+                        }
                     }
-
-
                 }
+
+                if(loc.getHeart() != null){
+                    Heart h = loc.getHeart();
+                    if (h != null) {
+                        batch.draw(h.getHeart(), loc.getX(), loc.getY());
+                    }
+                }
+
             }
 
             if (Gdx.input.isTouched()) {
@@ -212,7 +219,12 @@ public class GameScreen implements Screen {
                 shootSound.play();
 
                 for(EnemyLocation l: enemyLocations) {
-                    l.checkCollision(touchPos);
+                    this.targeted = l.checkCollision(touchPos);
+                    if(this.targeted == 1){
+                        if(lives <= 5){
+                            lives += 1;
+                        }
+                    }
                 }
             }
 
@@ -226,20 +238,14 @@ public class GameScreen implements Screen {
             }
 
 
-            if (lives == 3) {
-                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-                batch.draw(lifeImage, 690, 400, heart_width, heart_height);
-                batch.draw(lifeImage, 740, 400, heart_width, heart_height);
+
+            //draw lives
+            int heartX = 640;
+            for(int z=1;z<=lives;z++){
+                batch.draw(lifeImage, heartX, 400, heart_width, heart_height);
+                heartX+=50;
             }
 
-            if (lives == 2) {
-                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-                batch.draw(lifeImage, 690, 400, heart_width, heart_height);
-            }
-
-            if (lives == 1) {
-                batch.draw(lifeImage, 640, 400, heart_width, heart_height);
-            }
 
             if (lives < 1) {
                 state = "Game Over";
@@ -269,7 +275,7 @@ public class GameScreen implements Screen {
 
 
     private void spawnEnemy(float dt){
-        
+
         this.updateAvailableLocations();
         //we only spawn if locations are not full
         if(EnemyLocation.occupiedLocations < enemyLocations.size){
@@ -277,22 +283,45 @@ public class GameScreen implements Screen {
             if (spawnTimer + 1 == (int)dt) {
                 spawnTimer = (int)dt;
                 Enemy spawned = null;
+                Heart spawnHeart = null;
                 EnemyLocation addToLocation;
-                //create enemy
-                spawned = new Enemy();
-                enemies.add(spawned);
+
+                //1 out of 5 chance to spawn a heart
+                int heartRandom = new Random().nextInt((5 - 1) + 1) + 1;
                 int availableIndex = 0;
+                int random = -1;
 
-                if(this.available.size() > 0){
-                    availableIndex = this.available.size() - 1;
+                if(heartRandom == 1){
+                    //we create a heart
+                    //create enemy
+                    spawnHeart = new Heart();
+
+                    if(this.available.size() > 0){
+                        availableIndex = this.available.size() - 1;
+                    }
+
+                    //set enemy randomly on available locations
+                    if(spawnHeart!=null){
+                        random = new Random().nextInt((availableIndex - 0) + 1) + 0;
+                        addToLocation = enemyLocations.get(this.available.get(random));
+                        addToLocation.setHeart(spawnHeart);
+                    }
+                }else{
+                    //create enemy
+                    spawned = new Enemy();
+
+                    if(this.available.size() > 0){
+                        availableIndex = this.available.size() - 1;
+                    }
+
+                    //set enemy randomly on available locations
+                    if(spawned!=null){
+                        random = new Random().nextInt((availableIndex - 0) + 1) + 0;
+                        addToLocation = enemyLocations.get(this.available.get(random));
+                        addToLocation.setEnemy(spawned);
+                    }
                 }
 
-                //set enemy randomly on available locations
-                if(spawned!=null){
-                    int random = new Random().nextInt((availableIndex - 0) + 1) + 0;
-                    addToLocation = enemyLocations.get(this.available.get(random));
-                    addToLocation.setEnemy(spawned);
-                }
             }
         }
 

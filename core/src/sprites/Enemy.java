@@ -24,13 +24,15 @@ public class Enemy {
     public enum EnemyState { IDLE,FIRING }
     public EnemyState currentState;
 
-    private int timeStart = 0;
+    private int timeStart;
     private float stateTime;
     private Sound enemyFireSound;
     private Sound enemyHurtSound;
     public Enemy(){
         this.currentState = EnemyState.IDLE;
+        this.timeStart = 0;
         this.isAlive = true;
+        this.stateTime = 0;
         this.accuracy = 100; //100 accuracy will always hit
         this.texture = new Texture("enemy_sprite.png");
         this.textureRegion = new TextureRegion(texture,0,0,this.width,this.height);
@@ -43,7 +45,6 @@ public class Enemy {
     public void hit() {
         this.playHurtSound();
         isAlive = false;
-
     }
 
     public boolean isAlive() {

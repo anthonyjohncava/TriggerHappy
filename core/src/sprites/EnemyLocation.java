@@ -6,6 +6,7 @@ public class EnemyLocation {
     private boolean isOccupied = false;
     private Vector3 position;
     private Enemy enemyContained = null;
+    private Heart heartContained = null;
     public static int occupiedLocations = 0;
 
     public EnemyLocation(float x,float y){
@@ -27,8 +28,23 @@ public class EnemyLocation {
         return true;
     }
 
+    public boolean setHeart(Heart h){
+        if(h == null){
+            this.isOccupied = false;
+            return false;
+        }
+        this.heartContained = h;
+        this.isOccupied = true;
+        occupiedLocations+=1;
+        return true;
+    }
+
     public Enemy getEnemy(){
         return this.enemyContained;
+    }
+
+    public Heart getHeart(){
+        return this.heartContained;
     }
 
     public boolean hasEnemy(){
@@ -47,7 +63,8 @@ public class EnemyLocation {
         return this.position;
     }
 
-    public void checkCollision(Vector3 mouseClick) {
+    public int checkCollision(Vector3 mouseClick) {
+        int targeted = -1; //0 if enemy 1 if heart
         //we only check if there is an enemy contained
         if(this.enemyContained != null){
             if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.enemyContained.getWidth()) {
@@ -59,7 +76,23 @@ public class EnemyLocation {
                     this.isOccupied = false;
                 }
             }
+            return 0;
         }
+
+        //if it contains heart
+        if(this.heartContained != null){
+            if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.heartContained.getWidth()) {
+                if (mouseClick.y >= this.position.y && mouseClick.y <= this.position.y + this.heartContained.getHeight()) {
+                    //kill the enemy and empty the location
+                    this.heartContained = null;
+                    this.occupiedLocations-=1;
+                    this.isOccupied = false;
+                }
+            }
+            return 1;
+        }
+
+        return targeted;
     }
 
 }
