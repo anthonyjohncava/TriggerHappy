@@ -73,6 +73,7 @@ public class GameScreen implements Screen {
     String state;
     int timeStart;
     int spawnTimer;
+    private int heartSpawnCount;
     private int targeted;
     private boolean heartHit;
 
@@ -92,6 +93,7 @@ public class GameScreen implements Screen {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
+        this.heartSpawnCount = 0;
         this.killLimit = 10;
         this.kills = 0;
         this.heartHit = false;
@@ -232,6 +234,8 @@ public class GameScreen implements Screen {
                 for(EnemyLocation l: enemyLocations) {
                     this.targeted = l.checkCollision(touchPos);
                     if(this.targeted == 1){
+                        //we lessen the spawned heart count
+                        this.heartSpawnCount--;
                         if(lives < 3){
                             lives += 1;
                         }
@@ -323,6 +327,11 @@ public class GameScreen implements Screen {
                 int availableIndex = 0;
                 int random = -1;
 
+                //we force to create enemy if 3 hearts are currently spawned
+                if(this.heartSpawnCount >= 3){
+                    heartRandom = 2;
+                }
+
                 if(heartRandom == 1){
                     //we create a heart
                     //create enemy
@@ -337,6 +346,7 @@ public class GameScreen implements Screen {
                         random = new Random().nextInt((availableIndex - 0) + 1) + 0;
                         addToLocation = enemyLocations.get(this.available.get(random));
                         addToLocation.setHeart(spawnHeart);
+                        this.heartSpawnCount++;
                     }
                 }else{
                     //create enemy
