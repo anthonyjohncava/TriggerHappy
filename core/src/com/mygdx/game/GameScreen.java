@@ -46,6 +46,7 @@ public class GameScreen implements Screen {
 
     float stateTime;                                        // The time the program has been running.
 
+    private Music backgroundMusic;                          // Background music while playing the game.
 
     // Heart variables
     private Texture lifeImage;
@@ -87,6 +88,7 @@ public class GameScreen implements Screen {
     }
 
     public void create() {
+        loadMusic();
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
@@ -157,6 +159,7 @@ public class GameScreen implements Screen {
             public void clicked (InputEvent event, float x, float y)
             {
                 EnemyLocation.resetOccupied();
+                backgroundMusic.stop();
                 stateTime = 0;
                 game.setScreen(MyGdxGame.gameScreen);
             }
@@ -296,7 +299,9 @@ public class GameScreen implements Screen {
 
 
     private void loadMusic() {
-
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background_music.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
     }
 
 
