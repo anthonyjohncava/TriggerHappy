@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -9,13 +7,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -25,92 +18,74 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
-
 import java.util.ArrayList;
 import java.util.Random;
-
 import sprites.Enemy;
 import sprites.EnemyLocation;
 import sprites.Heart;
 
 /**
- * Game screen
- * The screen where the game is actually running
+ * This class implements the GameScreen, which renders the entire game.
  */
 public class GameScreen implements Screen {
     MyGdxGame game;
-    SpriteBatch batch;
-
-    // Variables for rendering the tiledMap.
+    SpriteBatch batch;                                      // Spritebatch for rendering
     private TiledMap tiledMap;                              // Loads the tiledMap.
     private OrthogonalTiledMapRenderer tiledMapRenderer;    // Renders the tiledMap.
     private OrthographicCamera camera;                      // Camera to show a specific portion of the world to the player.
-    float stateTime;                                        // The time the program has been running.
-
-    //Textures
-    private Texture lifeImage;
-    private Texture gunTrigger;
-    private Texture bloodshot;
-    private Texture gameOverText;
-    private Texture congratsText;
-
-    //Sound variables
-    private Sound shootSound;
-    private Sound winSound;
-    private Sound gameOverSound;
+    private float stateTime;                                // The time the program has been running.
+    private Texture lifeImage;                              // Image of player's life.
+    private Texture gunTrigger;                             // Image when player fires.
+    private Texture bloodshot;                              // Image when player gets shot.
+    private Texture gameOverText;                           // Image when player loses.
+    private Texture congratsText;                           // Image when player wins.
+    private Sound shootSound;                               // Sound when player wins.
+    private Sound winSound;                                 // Sound when player wins.
+    private Sound gameOverSound;                            // Sound when player dies.
     private Music backgroundMusic;                          // Background music while playing the game.
+    private Skin skin;                                      // The skin/style of the buttons.
+    private Stage stage;                                    // This will hold the button Actors.
+    private Array<EnemyLocation> enemyLocations;            // Window locations in the game.
+    private ArrayList<Integer> available;                   // Number of available locations for enemies to spawn.
+    private String state;                                   // State of the player.
+    private int timeStart;                                  // To track how long the bloodshot shows.
+    private int spawnTimer;                                 // Timer to spawn enemies/hearts.
+    private int lives;                                      // Player's number of lives.
+    private static final int heart_height = 90;             // Size of the heart in lives.
+    private static final int heart_width = 75;              // Size of the heart in lives.
+    private int heartSpawnCount;                            // Counter to check how many hearts have spawned.
+    private int targeted;                                   // To check if the target is a heart or enemy.
+    private int kills;                                      // To count the number of enemies killed.
+    private int killLimit;                                  // The total number of enemies to kill to win the game.
+    private TextButton retry_btn;                           // Retry button.
+    private TextButton exit_btn;                            // Exit button.
 
-    private Skin skin;
-    private Stage stage;
+    /**
+     * Constructor of the GameScreen.
+     */
+    public GameScreen(MyGdxGame game) { this.game = game;}
 
-    //Game variables
-    private Array<EnemyLocation> enemyLocations;
-    private ArrayList<Integer> available;
-    String state;
-    private int timeStart;
-    private int spawnTimer;
-    private int lives;
-    private static int heart_height = 90;
-    private static int heart_width = 75;
-    private int heartSpawnCount;
-    private int targeted;
-    private boolean heartHit;
-
-    private int kills;
-    private int killLimit;
-
-    //Buttons
-    private TextButton button;
-    private TextButton exitBtn;
-
-    // constructor to keep a reference to the main Game class
-    public GameScreen(MyGdxGame game) {
-        this.game = game;
-    }
-
+    /**
+     * This method is called initially when the GameScreen starts to initialise the variables.
+     */
     public void create() {
 
-        //initialize game variables
+        // Initialize game variables.
         this.heartSpawnCount = 0;
         this.killLimit = 30;
         this.kills = 0;
-        this.heartHit = false;
         this.targeted = -1;
         this.state = "ok";
         this.timeStart = 0;
         this.spawnTimer = 0;
         this.batch = new SpriteBatch();
         this.available = new ArrayList<Integer>();
-        this.lives = 3; //we have 3 lives at the start, 3 is the max number of lives
+        this.lives = 3;                                     //we have 3 lives at the start, 3 is the max number of lives
 
-        //prepare music
+        // Loads the background music and sound effects.
         loadMusic();
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
-        winSound = Gdx.audio.newSound(Gdx.files.internal("win.mp3"));
-        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
-        //prepare locations
+        // Prepare locations.
         enemyLocations = new Array<EnemyLocation>();
         enemyLocations.add(new EnemyLocation(93,90));
         enemyLocations.add(new EnemyLocation(225,90));
@@ -124,40 +99,37 @@ public class GameScreen implements Screen {
         enemyLocations.add(new EnemyLocation(93,315));
         this.updateAvailableLocations();
 
-
-        // Loads the tiledMap. ---------------------------------------------------------------------
+        // Loads the tiledMap.
         tiledMap = new TmxMapLoader().load("testMap.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        // Sets the camera. ------------------------------------------------------------------------
+        // Sets the camera.
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()*3-700, Gdx.graphics.getHeight()*3-400);
         camera.position.set(Gdx.graphics.getWidth()+70, Gdx.graphics.getHeight()+70,0);
 
-        //Prepare textures
+        // Prepare textures.
         lifeImage = new Texture(Gdx.files.internal("heart.png"));
         gameOverText = new Texture(Gdx.files.internal("gameover.png"));
         congratsText = new Texture(Gdx.files.internal("congrats.png"));
         bloodshot = new Texture(Gdx.files.internal("bloodstain.png"));
         gunTrigger = new Texture(Gdx.files.internal("explosion.png"));
 
-
-        // Game over buttons
+        // Game over buttons.
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         stage = new Stage();
 
-        button = new TextButton("RETRY", skin);
-        button.setWidth(250f);
-        button.setHeight(100f);
-        button.setPosition(Gdx.graphics.getWidth()/2 - 250f, Gdx.graphics.getHeight()/2 - 170f);
+        retry_btn = new TextButton("RETRY", skin);
+        retry_btn.setWidth(250f);
+        retry_btn.setHeight(100f);
+        retry_btn.setPosition(Gdx.graphics.getWidth()/2 - 250f, Gdx.graphics.getHeight()/2 - 170f);
 
+        exit_btn = new TextButton("EXIT", skin);
+        exit_btn.setWidth(250f);
+        exit_btn.setHeight(100f);
+        exit_btn.setPosition(Gdx.graphics.getWidth()/2 + 10f, Gdx.graphics.getHeight()/2 - 170f);
 
-        exitBtn = new TextButton("EXIT", skin);
-        exitBtn.setWidth(250f);
-        exitBtn.setHeight(100f);
-        exitBtn.setPosition(Gdx.graphics.getWidth()/2 + 10f, Gdx.graphics.getHeight()/2 - 170f);
-
-        button.addListener(new ClickListener()
+        retry_btn.addListener(new ClickListener()
         {
             @Override
             public void clicked (InputEvent event, float x, float y)
@@ -169,7 +141,7 @@ public class GameScreen implements Screen {
             }
         });
 
-        exitBtn.addListener(new ClickListener()
+        exit_btn.addListener(new ClickListener()
         {
             @Override
             public void clicked (InputEvent event, float x, float y)
@@ -182,13 +154,18 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+    /**
+     * The render method loops continuously, and is called after the create() method.
+     */
     public void render(float f) {
-        //Clear screen
+
+        // Clear screen.
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        // render tiledMap.
+
+        // Render tiledMap.
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
@@ -197,27 +174,24 @@ public class GameScreen implements Screen {
 
         batch.begin();
 
-        //Checking the game states
+        // Checking the game states.
         if (state == "ok" || state == "damaged") {
 
             //Spawn enemies on every available location
             this.spawnEnemy(stateTime);
 
-
-            //display enemy on locations
+            // Display enemy on locations.
             for(EnemyLocation loc: enemyLocations) {
                 if(loc.getEnemy() != null){
                     Enemy e = loc.getEnemy();
                     if (e != null && e.isAlive()) {
                         batch.draw(e.getEnemy(), loc.getX(), loc.getY());
-
                         if (e.update(Gdx.graphics.getDeltaTime()) == 1) {
                             lives -= 1;
                             state = "damaged";
                         }
                     }
                 }
-
                 if(loc.getHeart() != null){
                     Heart h = loc.getHeart();
                     if (h != null) {
@@ -227,6 +201,7 @@ public class GameScreen implements Screen {
 
             }
 
+            // Collision detection when enemy is hit.
             if (Gdx.input.isTouched()) {
                 Vector3 touchPos = new Vector3();
                 touchPos.set(Gdx.input.getX(), 480 - Gdx.input.getY(), 0);
@@ -236,20 +211,19 @@ public class GameScreen implements Screen {
                 for(EnemyLocation l: enemyLocations) {
                     this.targeted = l.checkCollision(touchPos);
                     if(this.targeted == 1){
-                        //we lessen the spawned heart count
+
+                        // We lessen the spawned heart count.
                         this.heartSpawnCount--;
                         if(lives < 3){
                             lives += 1;
                         }
-                    }else if(targeted == 0){
+                    } else if(targeted == 0){
                         kills++;
                     }
                 }
-
-
             }
 
-            // if player is damaged
+            // If player is damaged.
             if (timeStart + 5 == (int)stateTime) {
                 timeStart = (int)stateTime;
                 state = "ok";
@@ -258,51 +232,49 @@ public class GameScreen implements Screen {
                 batch.draw(bloodshot, -100, -160, 1000, 800);
             }
 
-
-            //draw heart depending on number of lives
+            // Draw heart depending on number of lives.
             int heartX = 640;
             for(int z=1;z<=lives;z++){
                 batch.draw(lifeImage, heartX, 400, heart_width, heart_height);
                 heartX+=50;
             }
 
+            // Game over if lives are less than 1.
             if (lives < 1) {
                 state = "Game Over";
                 gameOverSound.setVolume(gameOverSound.play(), 200);
                 gameOverSound.play();
             }
 
-
-            //Game condition to win when kill limit reached
+            // Game condition to win when kill limit reached.
             if(kills >= killLimit){
-                //once we reach the kill limit, we win the game
+
+                // Once we reach the kill limit, we win the game.
                 state = "Congratulations";
                 winSound.play();
             }
-
-
-        }else if(state == "Congratulations"){
+        } else if(state == "Congratulations"){
             batch.draw(congratsText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-        }else if(state == "Game Over") {
+        } else if(state == "Game Over") {
             batch.draw(gameOverText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         }
-
         batch.end();
 
-        if (state == "Game Over") {
-            stage.addActor(button);
-            stage.addActor(exitBtn);
-            stage.draw();
-
-        }else if(state == "Congratulations"){
-            stage.addActor(button);
-            stage.addActor(exitBtn);
+        // Renders buttons of the screen when the game ends.
+        if (state == "Game Over" || state == "Congratulations") {
+            stage.addActor(retry_btn);
+            stage.addActor(exit_btn);
             stage.draw();
         }
-
     }
 
+    /**
+     *  This method loads the background music and sound effects.
+     */
     private void loadMusic() {
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
+        winSound = Gdx.audio.newSound(Gdx.files.internal("win.mp3"));
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background_music.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
@@ -313,70 +285,70 @@ public class GameScreen implements Screen {
      * @param dt
      */
     private void spawnEnemy(float dt){
-        //update locations where enemy or heart can spawn
+
+        // Update locations where enemy or heart can spawn.
         this.updateAvailableLocations();
-        //we only spawn if locations are not full
+
+        // We only spawn if locations are not full.
         if(EnemyLocation.occupiedLocations < enemyLocations.size){
-            //logic for spawning enemy every x seconds
+
+            // Logic for spawning enemy every x seconds.
             if (spawnTimer + 1 == (int)dt) {
                 spawnTimer = (int)dt;
                 Enemy spawned = null;
                 Heart spawnHeart = null;
                 EnemyLocation addToLocation;
 
-                //1 out of 5 chance to spawn a heart
+                // 1 out of 5 chance to spawn a heart.
                 int heartRandom = new Random().nextInt((5 - 1) + 1) + 1;
                 int availableIndex = 0;
                 int random = -1;
 
-                //we force to create enemy if 3 hearts are currently spawned
+                // We force to create enemy if 3 hearts are currently spawned.
                 if(this.heartSpawnCount >= 3){
                     heartRandom = 2;
                 }
 
                 if(heartRandom == 1){
-                    //we create a heart
-                    //create enemy
                     spawnHeart = new Heart();
 
                     if(this.available.size() > 0){
                         availableIndex = this.available.size() - 1;
                     }
 
-                    //set enemy randomly on available locations
+                    // Set enemy randomly on available locations.
                     if(spawnHeart!=null){
                         random = new Random().nextInt((availableIndex - 0) + 1) + 0;
                         addToLocation = enemyLocations.get(this.available.get(random));
                         addToLocation.setHeart(spawnHeart);
                         this.heartSpawnCount++;
                     }
-                }else{
-                    //create enemy
+                } else{
+
+                    // Create enemy.
                     spawned = new Enemy();
 
                     if(this.available.size() > 0){
                         availableIndex = this.available.size() - 1;
                     }
 
-                    //set enemy randomly on available locations
+                    // Set enemy randomly on available locations.
                     if(spawned!=null){
                         random = new Random().nextInt((availableIndex - 0) + 1) + 0;
                         addToLocation = enemyLocations.get(this.available.get(random));
                         addToLocation.setEnemy(spawned);
                     }
                 }
-
             }
         }
-
-
     }
 
     /**
-     * Update the available locations where enemy or heart can spawn
+     * Updates the available locations where enemy or heart can spawn.
      */
     private void updateAvailableLocations(){
         this.available.clear();
+
         for(int x=0;x<enemyLocations.size;x++) {
             if(enemyLocations.get(x).hasEnemy() == false){
                 this.available.add(x);
@@ -384,6 +356,25 @@ public class GameScreen implements Screen {
         }
     }
 
+    @Override
+    public void resize(int width, int height) {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    /**
+     * This method calls the create() method after being called from a different page/menu.
+     */
+    @Override
+    public void show() {
+        create();
+    }
+
+    @Override
+    public void hide() {}
 
     @Override
     public void dispose() {
@@ -396,26 +387,5 @@ public class GameScreen implements Screen {
         lifeImage.dispose();
         stage.dispose();
         shootSound.dispose();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() { }
-
-    @Override
-    public void resume() { }
-
-    @Override
-    public void show() {
-        create();
-    }
-
-    @Override
-    public void hide() {
-        //Gdx.app.log("GameScreen: ","gameScreen hide called");
     }
 }

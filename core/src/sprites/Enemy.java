@@ -1,12 +1,9 @@
 package sprites;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
-
 import java.util.Random;
 
 /**
@@ -14,20 +11,20 @@ import java.util.Random;
  * Contains data about the enemy of the game and its methods
  */
 public class Enemy {
-    //Sprites
+
+    // Sprites.
     private Texture texture;
     private TextureRegion textureRegion;
     private int height = 39;
     private int width = 24;
 
-    //Enemy Status
+    // Enemy Status.
     private boolean isAlive;
-
-
     private int timeStart;
     private float stateTime;
     private Sound enemyFireSound;
     private Sound enemyHurtSound;
+
     public Enemy(){
         this.timeStart = 0;
         this.isAlive = true;
@@ -39,7 +36,6 @@ public class Enemy {
         enemyHurtSound.setVolume(enemyHurtSound.play(), 200);
     }
 
-
     public void hit() {
         this.playHurtSound();
         isAlive = false;
@@ -48,7 +44,6 @@ public class Enemy {
     public boolean isAlive() {
         return isAlive;
     }
-
 
     public int update(float dt){
         stateTime += dt;
@@ -65,7 +60,8 @@ public class Enemy {
     public int fire(){
         enemyFireSound.play();
         this.textureRegion = new TextureRegion(texture,24,0,this.width,this.height);
-        // accuracy at 50%
+
+        // Accuracy at 50%.
         int random = new Random().nextInt((1-0) + 1)+0;
         return random;
     }

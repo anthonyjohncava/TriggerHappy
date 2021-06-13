@@ -3,7 +3,7 @@ package sprites;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Locations on the building where enemy or heart can spawn
+ * Locations on the building where enemy or heart can spawn.
  */
 public class EnemyLocation {
     private boolean isOccupied = false;
@@ -62,13 +62,10 @@ public class EnemyLocation {
         return this.position.y;
     }
 
-    public Vector3 getLocation(){
-        return this.position;
-    }
-
     public int checkCollision(Vector3 mouseClick) {
-        int targeted = -1; //0 if enemy 1 if heart
-        //we only check if there is an enemy contained
+        int targeted = -1;      // 0 if enemy 1 if heart.
+
+        // We only check if there is an enemy contained.
         if(this.enemyContained != null){
             if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.enemyContained.getWidth()) {
                 if (mouseClick.y >= this.position.y && mouseClick.y <= this.position.y + this.enemyContained.getHeight()) {
@@ -82,21 +79,19 @@ public class EnemyLocation {
             }
         }
 
-        //if it contains heart
+        // If it contains heart.
         if(this.heartContained != null){
             if (mouseClick.x >= this.position.x && mouseClick.x <= this.position.x + this.heartContained.getWidth()) {
                 if (mouseClick.y >= this.position.y && mouseClick.y <= this.position.y + this.heartContained.getHeight()) {
-                    //kill the enemy and empty the location
+
+                    // Kill the enemy and empty the location
                     this.heartContained = null;
                     this.occupiedLocations-=1;
                     this.isOccupied = false;
                     targeted = 1;
                 }
             }
-
         }
-
         return targeted;
     }
-
 }

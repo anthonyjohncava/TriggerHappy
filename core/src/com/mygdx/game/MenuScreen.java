@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,53 +14,33 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import sprites.EnemyLocation;
 
 /**
- * Menu Screen of the game
+ * This class implements the menu screen of the game.
  */
 public class MenuScreen implements Screen{
-    MyGdxGame game; // Note it’s "MyGdxGame" not "Game"
 
-    private SpriteBatch batch;
-    private Skin skin;
-    private Stage stage;
+    MyGdxGame game;
+    private SpriteBatch batch;  // To render the title of the game.
+    private Skin skin;          // The skin/style of the button.
+    private Stage stage;        // To hold the button actors.
+    private Texture gameName;   // To store the image of the game's name.
 
-    private Texture gameName;
-
-    // constructor to keep a reference to the main Game class
-    public MenuScreen(MyGdxGame game) {
-        this.game = game;
-    }
+    /**
+     * Constructor of the MenuScreen.
+     */
+    public MenuScreen(MyGdxGame game) { this.game = game; }
 
     public void create() {
         batch = new SpriteBatch();
-        Gdx.app.log("MenuScreen: ","menuScreen create");
-
         gameName = new Texture(Gdx.files.internal("title.png"));
-
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         stage = new Stage();
-        final TextButton button = new TextButton("PLAY", skin);
-        button.setWidth(300f);
-        button.setHeight(100f);
-        button.setPosition(Gdx.graphics.getWidth()/2 - 400f, Gdx.graphics.getHeight()/2 - 170f);
 
-
-        final TextButton exitBtn = new TextButton("EXIT", skin);
-        exitBtn.setWidth(300f);
-        exitBtn.setHeight(100f);
-        exitBtn.setPosition(Gdx.graphics.getWidth()/2 + 50f, Gdx.graphics.getHeight()/2 - 170f);
-
-        button.addListener(new ClickListener()
-        {
-            @Override
-            public void clicked (InputEvent event, float x, float y)
-            {
-                game.setScreen(MyGdxGame.gameScreen);
-                button.remove();
-                exitBtn.remove();
-            }
-        });
-        exitBtn.addListener(new ClickListener()
-        {
+        // Exit button. When pressed, it closes the app.
+        final TextButton exit_btn = new TextButton("EXIT", skin);
+        exit_btn.setWidth(300f);
+        exit_btn.setHeight(100f);
+        exit_btn.setPosition(Gdx.graphics.getWidth()/2 + 50f, Gdx.graphics.getHeight()/2 - 170f);
+        exit_btn.addListener(new ClickListener() {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
@@ -71,8 +49,25 @@ public class MenuScreen implements Screen{
             }
         });
 
-        stage.addActor(button);
-        stage.addActor(exitBtn);
+        // Play button. When pressed, it opens the GameScreen.
+        final TextButton play_btn = new TextButton("PLAY", skin);
+        play_btn.setWidth(300f);
+        play_btn.setHeight(100f);
+        play_btn.setPosition(Gdx.graphics.getWidth()/2 - 400f, Gdx.graphics.getHeight()/2 - 170f);
+        play_btn.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked (InputEvent event, float x, float y)
+            {
+                game.setScreen(MyGdxGame.gameScreen);
+                play_btn.remove();
+                exit_btn.remove();
+            }
+        });
+
+        // Adds the play and exit buttons to the stage to be rendered.
+        stage.addActor(play_btn);
+        stage.addActor(exit_btn);
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -86,6 +81,7 @@ public class MenuScreen implements Screen{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Renders buttons and title.
         batch.begin();
         batch.draw(gameName, Gdx.graphics.getWidth() /2 - 400f, Gdx.graphics.getHeight()/2 - 50f, 700, 200);
         batch.end();
@@ -93,27 +89,17 @@ public class MenuScreen implements Screen{
     }
 
     @Override
-    public void resize(int width, int height) {
-
-    }
+    public void resize(int width, int height) {}
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 }

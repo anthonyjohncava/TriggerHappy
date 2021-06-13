@@ -20,12 +20,9 @@ public class MyGdxGame extends Game implements ApplicationListener {
 
 	// The class with the menu
 	public static MenuScreen menuScreen;
+
 	// The class with the game
 	public static GameScreen gameScreen;
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 480;
-
-
 
 	@Override
 	public void create () {
