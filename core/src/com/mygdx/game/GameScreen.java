@@ -74,6 +74,9 @@ public class GameScreen implements Screen {
     private int targeted;
     private boolean heartHit;
 
+    private int kills;
+    private int killLimit;
+
     private TextButton button;
     private TextButton exitBtn;
 
@@ -86,6 +89,8 @@ public class GameScreen implements Screen {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
+        this.killLimit = 10;
+        this.kills = 0;
         this.heartHit = false;
         this.targeted = -1;
         state = "ok";
@@ -185,7 +190,7 @@ public class GameScreen implements Screen {
 
         batch.begin();
 
-        if (state != "Game Over") {
+        if (state == "ok" || state == "damaged") {
 
             //Spawn enemies on every available location
             this.spawnEnemy(stateTime);
@@ -226,6 +231,8 @@ public class GameScreen implements Screen {
                         if(lives < 3){
                             lives += 1;
                         }
+                    }else if(targeted == 0){
+                        kills++;
                     }
                 }
 
@@ -255,9 +262,19 @@ public class GameScreen implements Screen {
                 state = "Game Over";
                 gameOverSound.setVolume(gameOverSound.play(), 200);
                 gameOverSound.play();
-
             }
-        } else {
+
+
+            //Game condition
+            if(kills >= killLimit){
+                //once we reach the kill limit, we win the game
+                state = "Congratulations";
+            }
+
+
+        }else if(state == "Congratulations"){
+
+        }else if(state == "Game Over") {
             batch.draw(gameOverText, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         }
 
@@ -267,6 +284,9 @@ public class GameScreen implements Screen {
             stage.addActor(button);
             stage.addActor(exitBtn);
             stage.draw();
+
+        }else if(state == "Congratulations"){
+
         }
 
     }
