@@ -139,15 +139,15 @@ public class GameScreen implements Screen {
         stage = new Stage();
 
         button = new TextButton("RETRY", skin);
-        button.setWidth(300f);
+        button.setWidth(250f);
         button.setHeight(100f);
-        button.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 0f);
+        button.setPosition(Gdx.graphics.getWidth()/2 - 250f, Gdx.graphics.getHeight()/2 - 170f);
 
 
         exitBtn = new TextButton("EXIT", skin);
-        exitBtn.setWidth(300f);
+        exitBtn.setWidth(250f);
         exitBtn.setHeight(100f);
-        exitBtn.setPosition(Gdx.graphics.getWidth() /2 - 150f, Gdx.graphics.getHeight()/2 - 120f);
+        exitBtn.setPosition(Gdx.graphics.getWidth()/2 + 10f, Gdx.graphics.getHeight()/2 - 170f);
 
         button.addListener(new ClickListener()
         {
@@ -157,7 +157,6 @@ public class GameScreen implements Screen {
                 EnemyLocation.resetOccupied();
                 stateTime = 0;
                 game.setScreen(MyGdxGame.gameScreen);
-                //create();
             }
         });
 
