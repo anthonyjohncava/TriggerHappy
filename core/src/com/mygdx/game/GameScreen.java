@@ -384,7 +384,15 @@ public class GameScreen implements Screen {
 
 
     @Override
-    public void dispose() { }
+    public void dispose() {
+        backgroundMusic.dispose();
+        batch.dispose();
+        gunTrigger.dispose();
+        congratsText.dispose();
+        gameOverSound.dispose();
+        gameOverSound.dispose();
+        lifeImage.dispose();
+    }
 
     @Override
     public void resize(int width, int height) {
