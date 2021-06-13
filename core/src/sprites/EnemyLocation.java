@@ -74,9 +74,9 @@ public class EnemyLocation {
                     this.enemyContained = null;
                     this.occupiedLocations-=1;
                     this.isOccupied = false;
+                    targeted = 0;
                 }
             }
-            return 0;
         }
 
         //if it contains heart
@@ -87,9 +87,10 @@ public class EnemyLocation {
                     this.heartContained = null;
                     this.occupiedLocations-=1;
                     this.isOccupied = false;
+                    targeted = 1;
                 }
             }
-            return 1;
+
         }
 
         return targeted;

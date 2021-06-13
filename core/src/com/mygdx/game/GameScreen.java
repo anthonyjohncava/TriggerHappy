@@ -222,6 +222,11 @@ public class GameScreen implements Screen {
 
                 for(EnemyLocation l: enemyLocations) {
                     this.targeted = l.checkCollision(touchPos);
+                    if(this.targeted == 1){
+                        if(lives < 3){
+                            lives += 1;
+                        }
+                    }
                 }
 
 
