@@ -56,6 +56,7 @@ public class GameScreen implements Screen {
 
     private Texture gunTrigger;
     private Sound shootSound;
+    private Sound winSound;
     private Sound gameOverSound;
 
     private Texture bloodshot;
@@ -90,6 +91,7 @@ public class GameScreen implements Screen {
     public void create() {
         loadMusic();
         shootSound = Gdx.audio.newSound(Gdx.files.internal("gunshot.wav"));
+        winSound = Gdx.audio.newSound(Gdx.files.internal("win.mp3"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
         this.killLimit = 10;
@@ -273,6 +275,7 @@ public class GameScreen implements Screen {
             if(kills >= killLimit){
                 //once we reach the kill limit, we win the game
                 state = "Congratulations";
+                winSound.play();
             }
 
 
