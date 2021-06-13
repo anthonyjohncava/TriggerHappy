@@ -94,7 +94,7 @@ public class GameScreen implements Screen {
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameOverVoice.wav"));
 
         this.heartSpawnCount = 0;
-        this.killLimit = 10;
+        this.killLimit = 30;
         this.kills = 0;
         this.heartHit = false;
         this.targeted = -1;
